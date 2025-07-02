@@ -5,6 +5,7 @@ import {
   EmojiEmotions as AboutIcon, 
   LocationOn as LocationIcon 
 } from '@mui/icons-material';
+import shaunAvatar from '../assets/shaun.png'; // TODO: Replace with Shaun's image
 
 const About = () => {
   
@@ -20,7 +21,7 @@ const About = () => {
         </Typography>
         
         <Grid container spacing={4} alignItems="stretch">
-          <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Grid item xs={12} md={4}>
             <Box sx={{ 
               position: 'relative',
               mb: 3,
@@ -51,8 +52,8 @@ const About = () => {
             }}>
               <Box
                 component="img"
-                src="/angel-avatar.jpg"
-                alt="Angel Ramirez"
+                src={shaunAvatar}
+                alt="Shaun Stephenson"
                 sx={{
                   width: '100%',
                   maxWidth: 300,
@@ -67,11 +68,14 @@ const About = () => {
                 }}
               />
             </Box>
+          </Grid>
             
+          {/* Location & Contact Info */}
+          <Grid item xs={12} md={6}>
             <Paper elevation={3} sx={{ 
               p: 3, 
               borderRadius: 2, 
-              flex: 1, 
+              height: '100%',
               display: 'flex', 
               flexDirection: 'column',
               '&:hover': {
@@ -100,8 +104,30 @@ const About = () => {
               }}>
                 <Typography variant="h6">San Diego, California</Typography>
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                  Open to opportunities in the area
+                  3942 8th Ave #17, San Diego, CA 92103
                 </Typography>
+                
+                {/* Google Maps Embed */}
+                <Box sx={{ 
+                  width: '100%', 
+                  height: 200, 
+                  mb: 3,
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }}>
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26889.42977003!2d-117.16498394999999!3d32.7472569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d954c7f5df33f5%3A0x7cc1e6e25add0087!2sHillcrest%2C%20San%20Diego%2C%20CA!5e0!3m2!1sen!2sus!4v1656465858000!5m2!1sen!2sus" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen="" 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Hillcrest, San Diego Map"
+                  />
+                </Box>
                 
                 <Typography variant="subtitle2" sx={{ 
                   mt: 3, 
@@ -113,21 +139,22 @@ const About = () => {
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   <Box component="span" sx={{ fontWeight: 500, mr: 1 }}>Email:</Box>
-                  angel.ramirez@example.com
+                  shaun@shaunfitzgarald.com
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   <Box component="span" sx={{ fontWeight: 500, mr: 1 }}>Phone:</Box>
-                  (555) 123-4567
+                  +1 (858) 769-9688
                 </Typography>
                 <Typography variant="body2">
-                  <Box component="span" sx={{ fontWeight: 500, mr: 1 }}>Military Status:</Box>
-                  U.S. Army Reserve
+                  <Box component="span" sx={{ fontWeight: 500, mr: 1 }}>Education:</Box>
+                  Computer Science (In Progress)
                 </Typography>
               </Box>
             </Paper>
           </Grid>
           
-          <Grid item xs={12} md={8}>
+          {/* Bio Info */}
+          <Grid item xs={12}>
             <Paper elevation={3} sx={{ 
               p: 3, 
               borderRadius: 2,
@@ -152,10 +179,10 @@ const About = () => {
                 Who am I?
               </Typography>
               <Typography paragraph sx={{ mb: 3, lineHeight: 1.8 }}>
-                I'm a dedicated and compassionate individual with a strong background in caregiving and customer service.
-                My experience in the U.S. Army Reserve has instilled in me discipline, teamwork, and the ability to
-                perform well under pressure. I'm passionate about helping others and always strive to make a positive
-                impact in my community.
+                I'm an energetic and detail-oriented professional with strong experience in fast-paced, high-volume environments.
+                Skilled in customer service, multitasking, problem-solving, and technical communication. Currently pursuing a
+                degree in Computer Science while delivering modern web applications for clients. I'm open to full-time roles
+                that value organization, adaptability, and a commitment to quality work.
               </Typography>
               
               <Typography 

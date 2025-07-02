@@ -18,6 +18,7 @@ import {
   useScrollTrigger,
   Fade,
 } from '@mui/material';
+import logoImage from './assets/shaunfitzgarald.png';
 import {
   Menu as MenuIcon,
   Home as HomeIcon,
@@ -28,6 +29,7 @@ import {
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from '@mui/icons-material';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import SchoolIcon from '@mui/icons-material/School';
 
 
 // Import sections
@@ -37,7 +39,12 @@ import Experience from './sections/Experience';
 import Skills from './sections/Skills';
 import Projects from './sections/Projects';
 import Contact from './sections/Contact';
+import Education from './sections/Education';
 import Footer from './sections/Footer';
+
+// Import pages
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 const drawerWidth = 240;
 
@@ -94,6 +101,7 @@ function App() {
     { text: 'About', icon: <PersonIcon />, path: '/about' },
     { text: 'Experience', icon: <WorkIcon />, path: '/experience' },
     { text: 'Skills', icon: <CodeIcon />, path: '/skills' },
+    // { text: 'Education', icon: <SchoolIcon />, path: '/education' },
     { text: 'Projects', icon: <CodeIcon />, path: '/projects' },
     { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
   ];
@@ -110,8 +118,8 @@ function App() {
             to={item.path}
             onClick={() => isMobile && setMobileOpen(false)}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemIcon sx={{ color: '#ffffff' }}>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} sx={{ color: '#ffffff' }} />
           </ListItem>
         ))}
       </List>
@@ -142,9 +150,19 @@ function App() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Angel's Resume
-            </Typography>
+            <Box
+              component="img"
+              src={logoImage}
+              alt="Shaun Fitzgarald"
+              sx={{
+                height: { xs: 60, sm: 80, md: 100 },
+                maxWidth: '90%',
+                mr: 2,
+                display: 'flex',
+                filter: theme => theme.palette.mode === 'dark' ? 'brightness(1.2)' : 'none',
+                transition: 'all 0.3s ease'
+              }}
+            />
           </Toolbar>
         </AppBar>
 
@@ -194,8 +212,11 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/experience" element={<Experience />} />
               <Route path="/skills" element={<Skills />} />
+              {/* <Route path="/education" element={<Education />} /> */}
               <Route path="/projects" element={<Projects />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
             </Routes>
           </Container>
           <Footer />

@@ -122,7 +122,7 @@ const Home = () => {
             }
           }}
         >
-          Angel's Resume
+          Shaun's Resume
         </Typography>
       </motion.div>
 
@@ -196,7 +196,7 @@ const Home = () => {
             component={motion.a}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            href="/resume.pdf"
+            href="/Shaun_Stephenson_Resume_GP.pdf"
             download
             sx={{ 
               px: 4,
@@ -211,7 +211,7 @@ const Home = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Download CV
+            Download Resume
           </Button>
           <Button
             variant="outlined"
