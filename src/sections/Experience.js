@@ -323,7 +323,7 @@ const Experience = () => {
                     p: 3,
                     borderRadius: 2,
                     position: 'relative',
-                    borderLeft: `4px solid ${theme.palette[getDotColor(exp.type)].main}`,
+                    borderLeft: `4px solid ${dotColorMap[getDotColor(exp.type)]}`,
                     transition: 'all 0.3s ease',
                     transform: activeIndex === index ? 'translateY(-5px) scale(1.02)' : 'translateY(0) scale(1)',
                     boxShadow: activeIndex === index ? theme.shadows[8] : theme.shadows[3],
@@ -408,7 +408,7 @@ const Experience = () => {
                     '& li': {
                       mb: 0.5,
                       '&::marker': {
-                        color: theme.palette[getDotColor(exp.type)].main,
+                        color: dotColorMap[getDotColor(exp.type)],
                         fontSize: '1.2em',
                         lineHeight: 1
                       }
@@ -462,7 +462,7 @@ const Experience = () => {
                         fontWeight: 500,
                         transition: 'all 0.3s ease',
                         '& .MuiChip-icon': {
-                          color: theme.palette[getDotColor(exp.type)].main,
+                          color: dotColorMap[getDotColor(exp.type)],
                           ml: 0.5,
                           fontSize: '0.9rem'
                         },
@@ -472,8 +472,8 @@ const Experience = () => {
                         },
                         height: 24,
                         '&:hover': {
-                          bgcolor: theme.palette[getDotColor(exp.type)].light,
-                          color: theme.palette[getDotColor(exp.type)].contrastText,
+                          bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                          color: theme.palette.text.primary,
                           transform: 'translateY(-2px)',
                         }
                       }}
