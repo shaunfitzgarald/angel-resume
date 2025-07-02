@@ -2,54 +2,89 @@ import React from 'react';
 import { Box, Typography, Container, Grid, Card, CardContent, CardMedia, CardActions, Button, Chip } from '@mui/material';
 import { GitHub as GitHubIcon, Launch as LaunchIcon } from '@mui/icons-material';
 
+// Import project images
+import graceKlassenImg from '../assets/grace-klassen.png';
+import crookedCredenzaImg from '../assets/crooked-credenza.gif';
+import sdPrideNetworkImg from '../assets/san-diego-pride-network.gif';
+import sdStartupMapImg from '../assets/SDStartUpMap.png';
+import brickByBrickImg from '../assets/BrickByBrick.png';
+import chicklechatImg from '../assets/chickle-chat.gif';
+import shaunImg from '../assets/shaun.png';
+import shaunFitzgaraldImg from '../assets/shaunfitzgarald.png';
+
 const projects = [
   {
-    title: 'E-commerce Platform',
-    description: 'A full-featured e-commerce platform with user authentication, product catalog, shopping cart, and payment processing.',
-    image: 'https://via.placeholder.com/600x400/8E4585/FFFFFF?text=E-commerce',
-    tags: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-    github: 'https://github.com/username/ecommerce',
-    demo: 'https://ecommerce-demo.com'
+    title: 'Kelsey Sinclaire Portfolio',
+    description: 'A professional portfolio website for a creative professional, featuring a modern design with responsive layout and interactive elements.',
+    image: shaunFitzgaraldImg,
+    tags: ['React', 'Material-UI', 'Responsive Design', 'Portfolio'],
+    github: 'https://github.com/shaunfitzgarald/kelsey-portfolio',
+    demo: 'https://kelseysinclaire.com'
   },
   {
-    title: 'Task Management App',
-    description: 'A collaborative task management application with real-time updates, task assignments, and progress tracking.',
-    image: 'https://via.placeholder.com/600x400/8E4585/FFFFFF?text=Task+App',
-    tags: ['React', 'Firebase', 'Material-UI', 'Redux'],
-    github: 'https://github.com/username/task-app',
-    demo: 'https://task-app-demo.com'
+    title: 'Angel Post',
+    description: 'A content management platform with user authentication, post creation and management, and interactive features.',
+    image: shaunImg,
+    tags: ['React', 'Firebase', 'Authentication', 'Content Management'],
+    // github: 'https://github.com/shaunfitzgarald/angel',
+    demo: 'https://angelpost.me'
   },
   {
-    title: 'Portfolio Website',
-    description: 'A responsive portfolio website built with modern web technologies to showcase creative work and skills.',
-    image: 'https://via.placeholder.com/600x400/8E4585/FFFFFF?text=Portfolio',
-    tags: ['React', 'Gatsby', 'GraphQL', 'Styled Components'],
-    github: 'https://github.com/username/portfolio',
-    demo: 'https://my-portfolio-demo.com'
+    title: 'PosturePortal',
+    description: 'A comprehensive CRM system designed specifically for chiropractic practices, featuring patient management, appointment scheduling, and treatment tracking.',
+    image: shaunImg, // Using placeholder since there's a video for this project
+    video: 'https://youtube.com/embed/R5qmO6eQGaE',
+    tags: ['React', 'Node.js', 'Firebase', 'Vertex AI', 'Healthcare'],
+    // github: 'https://github.com/shaunfitzgarald/posture-portal',
+    demo: 'https://posture-portal.com'
   },
   {
-    title: 'Recipe Finder',
-    description: 'A web application that helps users discover recipes based on available ingredients and dietary preferences.',
-    image: 'https://via.placeholder.com/600x400/8E4585/FFFFFF?text=Recipe+Finder',
-    tags: ['Vue.js', 'Express', 'Spoonacular API', 'Bootstrap'],
-    github: 'https://github.com/username/recipe-finder',
-    demo: 'https://recipe-finder-demo.com'
+    title: 'ChickleChat',
+    description: 'A social networking platform with real-time messaging, user profiles, and content sharing capabilities.',
+    image: chicklechatImg,
+    tags: ['React', 'Firebase', 'Real-time Database', 'Authentication'],
+    // github: 'https://github.com/shaunfitzgarald/chickle-chat',
+    demo: 'https://chickle-chat.onrender.com'
   },
   {
-    title: 'Fitness Tracker',
-    description: 'A mobile-first application for tracking workouts, nutrition, and fitness goals with progress visualization.',
-    image: 'https://via.placeholder.com/600x400/8E4585/FFFFFF?text=Fitness+Tracker',
-    tags: ['React Native', 'Firebase', 'Redux', 'Expo'],
-    github: 'https://github.com/username/fitness-tracker',
-    demo: 'https://fitness-tracker-demo.com'
+    title: 'Grace Klassen Marketing Solutions',
+    description: 'A professional website for a marketing agency, showcasing services, portfolio, and client testimonials with a clean, modern design.',
+    image: graceKlassenImg,
+    tags: ['React', 'Responsive Design', 'SEO Optimization', 'Contact Form'],
+    github: 'https://github.com/shaunfitzgarald/grace-klassen-react',
+    demo: 'https://graceklassen.com'
   },
   {
-    title: 'Weather Dashboard',
-    description: 'A weather application providing current conditions and forecasts with an intuitive user interface.',
-    image: 'https://via.placeholder.com/600x400/8E4585/FFFFFF?text=Weather+Dashboard',
-    tags: ['JavaScript', 'OpenWeather API', 'Chart.js', 'CSS Grid'],
-    github: 'https://github.com/username/weather-dashboard',
-    demo: 'https://weather-dashboard-demo.com'
+    title: 'The Crooked Credenza',
+    description: 'A portfolio website for an interior designer featuring project galleries, service information, and client testimonials.',
+    image: crookedCredenzaImg,
+    tags: ['HTML', 'CSS', 'JavaScript', 'Gallery', 'Animation', 'Responsive Design'],
+    github: 'https://github.com/shaunfitzgarald/the-crooked-credenza',
+    demo: 'https://the-crooked-credenza.onrender.com'
+  },
+  {
+    title: 'San Diego Pride Network',
+    description: 'An events platform for the San Diego LGBTQ+ community, featuring event listings, registration, and community resources.',
+    image: sdPrideNetworkImg,
+    tags: ['React', 'Firebase', 'Event Management', 'Community'],
+    github: 'https://github.com/shaunfitzgarald/san-diego-pride-network',
+    demo: 'https://sdpridenetwork.onrender.com'
+  },
+  {
+    title: 'San Diego Startup Map',
+    description: 'An interactive map application showcasing startups in the San Diego area, with filtering by industry, size, and funding stage.',
+    image: sdStartupMapImg,
+    tags: ['Internship Project', 'Ruby on Rails', 'Google Maps API', 'Filtering', 'Data Visualization'],
+    // github: 'https://github.com/shaunfitzgarald/sd-startup-map',
+    demo: 'https://sandiegostartupmap.com'
+  },
+  {
+    title: 'BrickByBrick',
+    description: 'A community platform for LEGO enthusiasts to share builds, exchange ideas, and connect with fellow builders.',
+    image: brickByBrickImg,
+    tags: ['React', 'Firebase', 'Community', 'Gallery'],
+    github: 'https://github.com/byteSizeFox/brick-by-brick-frontend',
+    demo: 'https://brick-by-brick-frontend.onrender.com'
   }
 ];
 
@@ -65,13 +100,26 @@ const ProjectCard = ({ project }) => {
         boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
       }
     }}>
-      <CardMedia
-        component="img"
-        height="200"
-        image={project.image}
-        alt={project.title}
-        sx={{ objectFit: 'cover' }}
-      />
+      {project.video ? (
+        <Box sx={{ height: '50vh', width: '100%' }}>
+          <iframe 
+            src={project.video} 
+            frameBorder="0" 
+            allowFullScreen
+            title={`${project.title} video`}
+            width="100%"
+            height="100%"
+          />
+        </Box>
+      ) : (
+        <CardMedia
+          component="img"
+          height="500"
+          image={project.image}
+          alt={project.title}
+          sx={{ objectFit: 'cover' }}
+        />
+      )}
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h5" component="h3">
           {project.title}
@@ -95,23 +143,6 @@ const ProjectCard = ({ project }) => {
         </Box>
       </CardContent>
       <CardActions sx={{ p: 2, pt: 0 }}>
-        {project.github && (
-          <Button 
-            size="small" 
-            startIcon={<GitHubIcon />}
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ 
-              color: 'text.primary',
-              '&:hover': {
-                color: 'primary.main'
-              }
-            }}
-          >
-            Code
-          </Button>
-        )}
         {project.demo && (
           <Button 
             size="small" 
@@ -127,6 +158,23 @@ const ProjectCard = ({ project }) => {
             }}
           >
             Live Demo
+          </Button>
+        )}
+        {project.github && (
+          <Button 
+            size="small" 
+            startIcon={<GitHubIcon />}
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ 
+              color: 'text.primary',
+              '&:hover': {
+                color: 'primary.main'
+              }
+            }}
+          >
+            Code
           </Button>
         )}
       </CardActions>
@@ -159,7 +207,7 @@ const Projects = () => {
           variant="outlined" 
           color="primary" 
           size="large"
-          href="https://github.com/username"
+          href="https://github.com/shaunfitzgarald"
           target="_blank"
           rel="noopener noreferrer"
           endIcon={<GitHubIcon />}

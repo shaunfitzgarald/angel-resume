@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { db } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
   Box, 
   Typography, 
@@ -23,6 +25,7 @@ import {
 } from '@mui/icons-material';
 
 const Contact = () => {
+  const form = useRef();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +35,7 @@ const Contact = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,23 +45,91 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Email is sent via Firebase Functions when a new message is added to Firestore
+
+  // Test Firebase connectivity
+  const testFirebaseConnection = async () => {
+    try {
+      console.log('Testing Firebase connection...');
+      // Try to get a reference to the messages collection
+      const messagesRef = collection(db, 'messages');
+      console.log('Firebase connection successful, messages collection reference:', messagesRef);
+      return true;
+    } catch (error) {
+      console.error('Firebase connection test failed:', error);
+      return false;
+    }
+  };
+
+  // Function to save message to Firebase
+  const saveToFirebase = async () => {
+    try {
+      // First test the connection
+      const connectionOk = await testFirebaseConnection();
+      if (!connectionOk) {
+        console.error('Cannot save message: Firebase connection failed');
+        return false;
+      }
+      
+      console.log('Attempting to save message to Firebase:', formData);
+      
+      // Create a test message with timestamp to verify Firestore writes
+      const messageData = {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        timestamp: serverTimestamp(),
+        clientTimestamp: new Date().toISOString() // Add client timestamp for verification
+      };
+      
+      console.log('Prepared message data:', messageData);
+      
+      const docRef = await addDoc(collection(db, 'messages'), messageData);
+      
+      console.log('Message successfully saved to Firebase with ID:', docRef.id);
+      return true;
+    } catch (error) {
+      console.error('Failed to save message to Firebase:', error);
+      console.error('Error details:', error.code, error.message);
+      alert('Firebase error: ' + error.message); // Show alert for debugging
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log('Form submitted:', formData);
+    setLoading(true);
     
-    // Show success message
-    setSnackbarMessage('Your message has been sent successfully!');
-    setSnackbarSeverity('success');
-    setOpenSnackbar(true);
-    
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+    try {
+      // Save to Firebase (which triggers the Cloud Function to send email)
+      const firebaseSuccess = await saveToFirebase();
+      
+      if (firebaseSuccess) {
+        // Show success message
+        setSnackbarMessage('Your message has been sent successfully!');
+        setSnackbarSeverity('success');
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        // Show error if Firebase save failed
+        setSnackbarMessage('Failed to send message. Please try again later.');
+        setSnackbarSeverity('error');
+      }
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      setSnackbarMessage('An unexpected error occurred. Please try again.');
+      setSnackbarSeverity('error');
+    } finally {
+      setOpenSnackbar(true);
+      setLoading(false);
+    }
   };
 
   const handleCloseSnackbar = () => {
@@ -68,19 +140,19 @@ const Contact = () => {
     {
       icon: <EmailIcon color="primary" fontSize="large" />,
       title: 'Email',
-      value: 'angel@example.com',
-      href: 'mailto:angel@example.com'
+      value: 'shaun@shaunfitzgarald.com',
+      href: 'mailto:shaun@shaunfitzgarald.com'
     },
     {
       icon: <PhoneIcon color="primary" fontSize="large" />,
       title: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567'
+      value: '+1 (858) 769-9688',
+      href: 'tel:+18587699688'
     },
     {
       icon: <LocationIcon color="primary" fontSize="large" />,
       title: 'Location',
-      value: 'San Francisco Bay Area, CA',
+      value: 'San Diego Hillcrest Area, CA',
       href: 'https://maps.google.com'
     }
   ];
@@ -89,19 +161,19 @@ const Contact = () => {
     {
       icon: <GitHubIcon />,
       label: 'GitHub',
-      url: 'https://github.com/username',
+      url: 'https://github.com/shaunfitzgarald',
       color: '#333'
     },
     {
       icon: <LinkedInIcon />,
       label: 'LinkedIn',
-      url: 'https://linkedin.com/in/username',
+      url: 'https://linkedin.com/in/shaunfitzgarald',
       color: '#0077B5'
     },
     {
       icon: <TwitterIcon />,
       label: 'Twitter',
-      url: 'https://twitter.com/username',
+      url: 'https://twitter.com/shaunfitzgarald',
       color: '#1DA1F2'
     }
   ];
@@ -196,13 +268,10 @@ const Contact = () => {
             <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
               Interested in my experience or have a question? I'll get back to you as soon as possible.
             </Typography>
-            <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
-              Interested in my experience or have a question? I'll get back to you as soon as possible.
-            </Typography>
-            
-            <form onSubmit={handleSubmit}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+            <form ref={form} onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid container item spacing={3}>
+                <Grid item xs={12} md={4}>
                   <TextField
                     fullWidth
                     label="Your Name"
@@ -214,7 +283,7 @@ const Contact = () => {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} md={4}>
                   <TextField
                     fullWidth
                     label="Your Email"
@@ -227,7 +296,7 @@ const Contact = () => {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={4}>
                   <TextField
                     fullWidth
                     label="Subject"
@@ -239,41 +308,43 @@ const Contact = () => {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Your Message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    multiline
-                    rows={6}
-                    variant="outlined"
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    endIcon={<SendIcon />}
-                    sx={{
-                      mt: 1,
-                      px: 4,
-                      py: 1.5,
-                      borderRadius: 2,
-                      textTransform: 'none',
-                      fontSize: '1rem',
-                      fontWeight: 600
-                    }}
-                  >
-                    Send Message
-                  </Button>
-                </Grid>
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Your Message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  multiline
+                  rows={6}
+                  variant="outlined"
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  endIcon={<SendIcon />}
+                  disabled={loading}
+                  sx={{
+                    mt: 1,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 600
+                  }}
+                >
+                  {loading ? 'Sending...' : 'Send Message'}
+                </Button>
+              </Grid>
+            </Grid>
             </form>
           </Paper>
         </Grid>

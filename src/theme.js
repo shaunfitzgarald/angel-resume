@@ -2,25 +2,49 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      main: '#8E4585', // Plum
-      light: '#B07EAA',
-      dark: '#5E2C5A',
+      main: '#0ACF83', // Vibrant tech green
+      light: '#3EE6A3',
+      dark: '#09A366',
       contrastText: '#fff',
     },
     secondary: {
-      main: '#4A148C', // Deep Purple
-      light: '#7B1FA2',
-      dark: '#311B92',
+      main: '#0066FF', // Tech blue
+      light: '#4D94FF',
+      dark: '#0047B3',
       contrastText: '#fff',
     },
+    // Tech color variations
+    tech: {
+      green: {
+        main: '#0ACF83',
+        dark: '#09A366',
+        darker: '#076E45',
+        darkest: '#054C30',
+      },
+      blue: {
+        main: '#0066FF',
+        dark: '#0047B3',
+        darker: '#003380',
+        darkest: '#001F4D',
+      },
+      cyan: '#00C2FF',
+      purple: '#7B61FF',
+      black: '#121212',
+      darkGray: '#1E1E1E',
+      gray: '#2D2D2D',
+      lightGray: '#3D3D3D',
+    },
     background: {
-      default: '#f9f9f9',
-      paper: '#ffffff',
+      default: '#121212', // Near black
+      paper: '#1E1E1E', // Dark gray
+      elevated: '#2D2D2D', // Slightly lighter dark gray
     },
     text: {
-      primary: '#212121',
-      secondary: '#757575',
+      primary: '#FFFFFF',
+      secondary: '#B0B0B0',
+      disabled: '#6C6C6C',
     },
   },
   typography: {
@@ -69,24 +93,102 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          background: '#121212',
+          color: '#ffffff',
+          borderRight: '1px solid rgba(10,207,131,0.2)',
+          boxShadow: '2px 0 10px rgba(0,0,0,0.3)',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
-          padding: '8px 24px',
+          borderRadius: 4,
+          padding: '10px 24px',
+          transition: 'all 0.2s ease',
+          textTransform: 'none',
+          fontWeight: 500,
         },
         contained: {
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)',
+            boxShadow: '0px 4px 10px rgba(10,207,131,0.3)',
+            transform: 'translateY(-2px)',
           },
         },
+        containedPrimary: {
+          background: '#0ACF83',
+          '&:hover': {
+            background: '#09A366',
+          },
+        },
+        containedSecondary: {
+          background: '#0066FF',
+          '&:hover': {
+            background: '#0047B3',
+            boxShadow: '0px 4px 10px rgba(0,102,255,0.3)',
+          },
+        },
+        outlined: {
+          borderWidth: 1,
+          '&:hover': {
+            borderWidth: 1,
+            backgroundColor: 'rgba(10,207,131,0.08)',
+          }
+        },
+        outlinedPrimary: {
+          borderColor: '#0ACF83',
+          '&:hover': {
+            borderColor: '#3EE6A3',
+          }
+        },
+        text: {
+          '&:hover': {
+            backgroundColor: 'rgba(10,207,131,0.08)',
+          }
+        }
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          boxShadow: '0 2px 10px rgba(10,207,131,0.2)',
+          background: 'linear-gradient(90deg, #121212 0%, #1E1E1E 100%)',
+          borderBottom: '1px solid rgba(10,207,131,0.3)',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          backgroundColor: '#1E1E1E',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+          transition: 'all 0.3s ease',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid #2D2D2D',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '2px',
+            background: 'linear-gradient(90deg, #0ACF83, #0066FF)',
+            opacity: 0.9,
+            transition: 'height 0.2s ease',
+          },
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 8px 30px rgba(10,207,131,0.15), 0 8px 30px rgba(0,102,255,0.15)',
+            '&::before': {
+              height: '3px',
+            }
+          },
         },
       },
     },
