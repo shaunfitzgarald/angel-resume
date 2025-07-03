@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, Container, Grid, Card, CardContent, CardMedia, CardActions, Button, Chip } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Container, Grid, Card, CardContent, CardMedia, CardActions, Button, Chip, Zoom, Fade } from '@mui/material';
 import { GitHub as GitHubIcon, Launch as LaunchIcon } from '@mui/icons-material';
 
 // Import project images
@@ -10,21 +10,22 @@ import sdStartupMapImg from '../assets/SDStartUpMap.png';
 import brickByBrickImg from '../assets/BrickByBrick.png';
 import chicklechatImg from '../assets/chickle-chat.gif';
 import shaunImg from '../assets/shaun.png';
-import shaunFitzgaraldImg from '../assets/shaunfitzgarald.png';
+import kelseySinclairImg from '../assets/kelseysinclaire.gif';
 
 const projects = [
   {
     title: 'Kelsey Sinclaire Portfolio',
     description: 'A professional portfolio website for a creative professional, featuring a modern design with responsive layout and interactive elements.',
-    image: shaunFitzgaraldImg,
+    image: kelseySinclairImg,
     tags: ['React', 'Material-UI', 'Responsive Design', 'Portfolio'],
     github: 'https://github.com/shaunfitzgarald/kelsey-portfolio',
     demo: 'https://kelseysinclaire.com'
   },
   {
-    title: 'Angel Post',
+    title: 'Angel (Post)',
     description: 'A content management platform with user authentication, post creation and management, and interactive features.',
-    image: shaunImg,
+    // image: shaunImg,
+    video: 'https://www.youtube.com/embed/-ZHwy2b2bLs',
     tags: ['React', 'Firebase', 'Authentication', 'Content Management'],
     // github: 'https://github.com/shaunfitzgarald/angel',
     demo: 'https://angelpost.me'
@@ -32,7 +33,7 @@ const projects = [
   {
     title: 'PosturePortal',
     description: 'A comprehensive CRM system designed specifically for chiropractic practices, featuring patient management, appointment scheduling, and treatment tracking.',
-    image: shaunImg, // Using placeholder since there's a video for this project
+    // image: shaunImg, // Using placeholder since there's a video for this project
     video: 'https://youtube.com/embed/R5qmO6eQGaE',
     tags: ['React', 'Node.js', 'Firebase', 'Vertex AI', 'Healthcare'],
     // github: 'https://github.com/shaunfitzgarald/posture-portal',
@@ -88,18 +89,29 @@ const projects = [
   }
 ];
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, index }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100 * index); // Staggered animation
+    
+    return () => clearTimeout(timer);
+  }, [index]);
   return (
-    <Card sx={{ 
-      height: '100%', 
-      display: 'flex', 
-      flexDirection: 'column',
-      transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-      '&:hover': {
-        transform: 'translateY(-5px)',
-        boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
-      }
-    }}>
+    <Zoom in={isVisible} style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}>
+      <Card sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
+        '&:hover': {
+          transform: 'translateY(-10px) scale(1.02)',
+          boxShadow: (theme) => `0 20px 30px -10px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.2)'}`
+        }
+      }}>
       {project.video ? (
         <Box sx={{ height: '50vh', width: '100%' }}>
           <iframe 
@@ -109,7 +121,7 @@ const ProjectCard = ({ project }) => {
             title={`${project.title} video`}
             width="100%"
             height="100%"
-          />
+          ></iframe>
         </Box>
       ) : (
         <CardMedia
@@ -179,6 +191,7 @@ const ProjectCard = ({ project }) => {
         )}
       </CardActions>
     </Card>
+    </Zoom>
   );
 };
 
@@ -197,7 +210,7 @@ const Projects = () => {
       <Grid container spacing={4}>
         {projects.map((project, index) => (
           <Grid item xs={12} sm={6} lg={4} key={index}>
-            <ProjectCard project={project} />
+            <ProjectCard project={project} index={index} />
           </Grid>
         ))}
       </Grid>

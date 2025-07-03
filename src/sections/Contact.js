@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
@@ -12,7 +12,9 @@ import {
   Divider, 
   IconButton,
   Snackbar,
-  Alert
+  Alert,
+  Zoom,
+  Fade
 } from '@mui/material';
 import { 
   Email as EmailIcon, 
@@ -25,6 +27,11 @@ import {
 } from '@mui/icons-material';
 
 const Contact = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
   const form = useRef();
   const [formData, setFormData] = useState({
     name: '',
@@ -191,13 +198,31 @@ const Contact = () => {
 
       <Grid container spacing={6}>
         <Grid item xs={12} md={5}>
-          <Paper elevation={3} sx={{ p: 4, height: '100%', borderRadius: 2 }}>
+          <Zoom in={isVisible} style={{ transitionDelay: '100ms' }}>
+            <Paper elevation={3} sx={{ 
+              p: 4, 
+              height: '100%', 
+              borderRadius: 2,
+              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+              '&:hover': {
+                transform: 'translateY(-5px)',
+                boxShadow: (theme) => theme.shadows[10]
+              }
+            }}>
             <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3, fontWeight: 600, color: 'primary.main' }}>
               Contact Information
             </Typography>
             
             {contactMethods.map((method, index) => (
-              <Box key={index} sx={{ display: 'flex', mb: 4 }}>
+              <Fade in={isVisible} style={{ transitionDelay: `${200 + index * 100}ms` }} key={index}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  mb: 4,
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateX(8px)'
+                  }
+                }}>
                 <Box sx={{ mr: 3, mt: 0.5 }}>
                   {method.icon}
                 </Box>
@@ -223,6 +248,7 @@ const Contact = () => {
                   </Typography>
                 </Box>
               </Box>
+              </Fade>
             ))}
 
             <Divider sx={{ my: 4 }} />
@@ -258,10 +284,20 @@ const Contact = () => {
               ))}
             </Box>
           </Paper>
+          </Zoom>
         </Grid>
 
         <Grid item xs={12} md={7}>
-          <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+          <Zoom in={isVisible} style={{ transitionDelay: '300ms' }}>
+            <Paper elevation={3} sx={{ 
+              p: 4, 
+              borderRadius: 2,
+              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+              '&:hover': {
+                transform: 'translateY(-5px)',
+                boxShadow: (theme) => theme.shadows[10]
+              }
+            }}>
             <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3, fontWeight: 600, color: 'primary.main' }}>
               Send Me a Message
             </Typography>
@@ -347,6 +383,7 @@ const Contact = () => {
             </Grid>
             </form>
           </Paper>
+          </Zoom>
         </Grid>
       </Grid>
 
