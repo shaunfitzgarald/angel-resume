@@ -11,11 +11,20 @@ import brickByBrickImg from '../assets/BrickByBrick.png';
 import chicklechatImg from '../assets/chickle-chat.gif';
 import shaunImg from '../assets/shaun.png';
 import kelseySinclairImg from '../assets/kelseysinclaire.gif';
+import eventsAppScreenshot from '../assets/events-app-screenshot.png'
 
 const projects = [
   {
+    title: 'EventsHub',
+    description: 'A full-stack events management platform built with React and Firebase. It provides end-to-end workflows—event creation, RSVPs, guest messaging, budgeting, calendar views, and social promotion—plus robust AI integrations for content generation, insights, and automation. Try it using the demo account (email: test@example.com, password: password).',
+    image: eventsAppScreenshot,
+    tags: ['React', 'Firebase', 'Material-UI', 'AI', 'RSVP', 'Calendar', 'Budgeting'],
+    github: 'https://github.com/shaunfitzgarald/events-app',
+    demo: 'https://events-app-shaun-stephensons-projects.vercel.app'
+  },
+  {
     title: 'Kelsey Sinclaire Portfolio',
-    description: 'A professional portfolio website for a creative professional, featuring a modern design with responsive layout and interactive elements.',
+    description: 'A modern, responsive portfolio for a creative professional with interactive features, including a secure admin portal (/admin) with full CRUD, enabling the client to manage all sections of the React app.',
     image: kelseySinclairImg,
     tags: ['React', 'Material-UI', 'Responsive Design', 'Portfolio'],
     github: 'https://github.com/shaunfitzgarald/kelsey-portfolio',
@@ -26,13 +35,13 @@ const projects = [
     description: 'A content management platform with user authentication, post creation and management, and interactive features.',
     // image: shaunImg,
     video: 'https://www.youtube.com/embed/-ZHwy2b2bLs',
-    tags: ['React', 'Firebase', 'Authentication', 'Content Management'],
+    tags: ['React', 'Firebase', 'Authentication', 'Content Management', 'AI Genkit'],
     // github: 'https://github.com/shaunfitzgarald/angel',
     demo: 'https://angelpost.me'
   },
   {
     title: 'PosturePortal',
-    description: 'A comprehensive CRM system designed specifically for chiropractic practices, featuring patient management, appointment scheduling, and treatment tracking.',
+    description: 'A comprehensive CRM system designed specifically for chiropractic practices, featuring patient management, appointment scheduling, and treatment tracking. Try it using the demo account (email: test@example.com, password: password).',
     // image: shaunImg, // Using placeholder since there's a video for this project
     video: 'https://youtube.com/embed/R5qmO6eQGaE',
     tags: ['React', 'Node.js', 'Firebase', 'Vertex AI', 'Healthcare'],
