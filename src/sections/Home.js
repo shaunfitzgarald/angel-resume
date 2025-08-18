@@ -196,7 +196,7 @@ const Home = () => {
             component={motion.a}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            href="/Shaun_Stephenson_Resume_GP.pdf"
+            href="/Resume_Stephenson_Shaun.pdf"
             download
             sx={{ 
               px: 4,
