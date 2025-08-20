@@ -7,7 +7,6 @@ import graceKlassenImg from '../assets/grace-klassen.png';
 import crookedCredenzaImg from '../assets/crooked-credenza.gif';
 import sdPrideNetworkImg from '../assets/san-diego-pride-network.gif';
 import sdStartupMapImg from '../assets/SDStartUpMap.png';
-import brickByBrickImg from '../assets/BrickByBrick.png';
 import chicklechatImg from '../assets/chickle-chat.gif';
 import shaunImg from '../assets/shaun.png';
 import kelseySinclairImg from '../assets/kelseysinclaire.gif';
@@ -87,14 +86,6 @@ const projects = [
     tags: ['Internship Project', 'Ruby on Rails', 'Google Maps API', 'Filtering', 'Data Visualization'],
     // github: 'https://github.com/shaunfitzgarald/sd-startup-map',
     demo: 'https://sandiegostartupmap.com'
-  },
-  {
-    title: 'BrickByBrick',
-    description: 'A community platform for LEGO enthusiasts to share builds, exchange ideas, and connect with fellow builders.',
-    image: brickByBrickImg,
-    tags: ['React', 'Firebase', 'Community', 'Gallery'],
-    github: 'https://github.com/byteSizeFox/brick-by-brick-frontend',
-    demo: 'https://brick-by-brick-frontend.onrender.com'
   }
 ];
 
