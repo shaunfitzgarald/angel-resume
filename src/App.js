@@ -27,7 +27,9 @@ import {
   Code as CodeIcon,
   Email as EmailIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
+  AttachMoney as AttachMoneyIcon,
 } from '@mui/icons-material';
+import DataObjectIcon from '@mui/icons-material/DataObject';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
 
@@ -41,6 +43,7 @@ import Projects from './sections/Projects';
 import Contact from './sections/Contact';
 import Education from './sections/Education';
 import Footer from './sections/Footer';
+import Pricing from './sections/Pricing';
 
 // Import pages
 import Terms from './pages/Terms';
@@ -102,7 +105,8 @@ function App() {
     { text: 'Experience', icon: <WorkIcon />, path: '/experience' },
     { text: 'Skills', icon: <CodeIcon />, path: '/skills' },
     // { text: 'Education', icon: <SchoolIcon />, path: '/education' },
-    { text: 'Projects', icon: <CodeIcon />, path: '/projects' },
+    { text: 'Projects', icon: <DataObjectIcon />, path: '/projects' },
+    { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
     { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
   ];
 
@@ -214,6 +218,7 @@ function App() {
               <Route path="/skills" element={<Skills />} />
               {/* <Route path="/education" element={<Education />} /> */}
               <Route path="/projects" element={<Projects />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
