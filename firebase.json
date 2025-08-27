@@ -15,6 +15,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/**",
+        "function": "chat"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
