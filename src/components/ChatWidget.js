@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CloseIcon from '@mui/icons-material/Close';
+import { sendChat } from '../services/aiService';
 
 const CONSENT_STORAGE_KEY = 'cookieConsent.v1';
 function readConsent() {
@@ -88,15 +89,8 @@ export default function ChatWidget({ embedded = false }) {
     try { window.dispatchEvent(new CustomEvent('chat-sent', { detail: { text } })); } catch (_) {}
     setLoading(true);
     try {
-      const endpoint = process.env.REACT_APP_CHAT_ENDPOINT || '/api/chat';
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next.slice(-10) }),
-      });
-      if (!res.ok) throw new Error('Network error');
-      const data = await res.json();
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.reply || '(no reply)' }]);
+      const reply = await sendChat(next);      
+      setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
       try { window.dispatchEvent(new CustomEvent('chat-response', { detail: { ok: true } })); } catch (_) {}
     } catch (e) {
       setMessages((prev) => [...prev, { role: 'assistant', content: 'Sorry, there was an error reaching the assistant.' }]);
