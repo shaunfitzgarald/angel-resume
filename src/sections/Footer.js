@@ -36,6 +36,16 @@ const Footer = () => {
           <Link component={RouterLink} to="/privacy" color="text.secondary" underline="hover" variant="body2">
             Privacy Policy
           </Link>
+          <Link
+            component="button"
+            onClick={() => window.dispatchEvent(new Event('cookie-consent-open'))}
+            color="text.secondary"
+            underline="hover"
+            variant="body2"
+            sx={{ cursor: 'pointer' }}
+          >
+            Cookie Settings
+          </Link>
         </Stack>
       </Container>
     </Box>

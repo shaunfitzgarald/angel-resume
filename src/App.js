@@ -28,6 +28,7 @@ import {
   Email as EmailIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
   AttachMoney as AttachMoneyIcon,
+  HelpOutline as HelpOutlineIcon,
 } from '@mui/icons-material';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
@@ -48,6 +49,9 @@ import Pricing from './sections/Pricing';
 // Import pages
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Help from './pages/Help';
+import ChatWidget from './components/ChatWidget';
+import CookieConsent from './components/CookieConsent';
 
 const drawerWidth = 240;
 
@@ -100,14 +104,15 @@ function App() {
   };
 
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon />, path: '/' },
-    { text: 'About', icon: <PersonIcon />, path: '/about' },
+    // { text: 'Home', icon: <HomeIcon />, path: '/' },
+    { text: 'About', icon: <PersonIcon />, path: '/' },
     { text: 'Experience', icon: <WorkIcon />, path: '/experience' },
     { text: 'Skills', icon: <CodeIcon />, path: '/skills' },
     // { text: 'Education', icon: <SchoolIcon />, path: '/education' },
     { text: 'Projects', icon: <DataObjectIcon />, path: '/projects' },
     { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
     { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
+    { text: 'Help', icon: <HelpOutlineIcon />, path: '/help' },
   ];
 
   const drawerContent = (
@@ -129,6 +134,34 @@ function App() {
       </List>
     </div>
   );
+
+  useEffect(() => {
+    const CONSENT_STORAGE_KEY = 'cookieConsent.v1';
+    const readConsent = () => {
+      try {
+        const raw = localStorage.getItem(CONSENT_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    };
+    const send = (name, params) => {
+      const consent = readConsent();
+      if (consent?.level !== 'all') return;
+      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+        window.gtag('event', name, params || {});
+      }
+    };
+    // Attach listeners once
+    if (typeof window !== 'undefined' && !window.__chat_analytics_bound) {
+      window.__chat_analytics_bound = true;
+      window.addEventListener('chat-opened', () => send('chat_opened'));
+      window.addEventListener('chat-sent', () => send('chat_sent'));
+      window.addEventListener('chat-response', (e) => send('chat_response', { success: !!(e?.detail?.ok) }));
+      window.addEventListener('cta-click', (e) => {
+        const d = e?.detail || {};
+        send('cta_click', { page: d.page, cta: d.cta, pkg: d.pkg });
+      });
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -212,13 +245,14 @@ function App() {
           <Toolbar id="back-to-top-anchor" />
           <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
+              {/* <Route path="/" element={<Home />} /> */}
+              <Route path="/" element={<About />} />
               <Route path="/experience" element={<Experience />} />
               <Route path="/skills" element={<Skills />} />
               {/* <Route path="/education" element={<Education />} /> */}
               <Route path="/projects" element={<Projects />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/help" element={<Help />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
@@ -237,6 +271,8 @@ function App() {
           </IconButton>
         </ScrollTop>
       </Box>
+      <CookieConsent />
+      <ChatWidget />
     </ThemeProvider>
   );
 }

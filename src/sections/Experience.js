@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, Paper, Chip, useTheme, useMediaQuery, Fade, Grow, Zoom } from '@mui/material';
-import { Work as WorkIcon, School as SchoolIcon, MilitaryTech as MilitaryIcon, LocationOn as LocationIcon, Star as StarIcon } from '@mui/icons-material';
+import { Box, Typography, Container, Paper, Chip, useTheme, useMediaQuery, Fade, Grow, Zoom, Button } from '@mui/material';
+import { Work as WorkIcon, School as SchoolIcon, MilitaryTech as MilitaryIcon, LocationOn as LocationIcon, Star as StarIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineOppositeContent, TimelineDot } from '@mui/lab';
 
 const experiences = [
@@ -216,7 +216,7 @@ const Experience = () => {
             align="center" 
             gutterBottom 
             sx={{ 
-              mb: 6,
+              mb: 2,
               fontWeight: 700,
               color: 'primary.main',
               position: 'relative',
@@ -241,6 +241,7 @@ const Experience = () => {
             Experience & Education
           </Typography>
         </Zoom>
+        
         
         <Timeline position={isMobile ? 'right' : 'alternate'} sx={{ m: 0, p: 0 }}>
           {sortedExperiences.map((exp, index) => (
@@ -488,7 +489,35 @@ const Experience = () => {
       </TimelineContent>
     </TimelineItem>
   ))}
-</Timeline>
+        </Timeline>
+        {/* Download Resume Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
+          <Fade in={isVisible} style={{ transitionDelay: '300ms' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              href="/Resume_Stephenson_Shaun.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              startIcon={<DownloadIcon />}
+              sx={{ 
+                px: 3,
+                py: 1,
+                borderRadius: '50px',
+                fontWeight: 600,
+                boxShadow: 3,
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: 4
+                },
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Download Resume
+            </Button>
+          </Fade>
+        </Box>
       </Container>
     </Box>
   );

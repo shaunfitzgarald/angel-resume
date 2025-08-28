@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Box, Typography, Button, useTheme, useMediaQuery, keyframes } from '@mui/material';
-import { Download as DownloadIcon } from '@mui/icons-material';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
@@ -122,7 +121,7 @@ const Home = () => {
             }
           }}
         >
-          Shaun's Resume
+          Hey there! 👋
         </Typography>
       </motion.div>
 
@@ -141,7 +140,7 @@ const Home = () => {
             px: 2
           }}
         >
-          Full Stack Developer & Creative Problem Solver
+          I'm Shaun, a Full Stack Developer & Creative Problem Solver
         </Typography>
       </motion.div>
 
@@ -173,9 +172,10 @@ const Home = () => {
             transition: { delay: 0.6 }
           }}
         >
-          Welcome to my professional portfolio. I'm passionate about creating beautiful, 
-          functional, and user-centered digital experiences. With a strong foundation in 
-          both design and development, I bring ideas to life through code.
+          This is what I do: I build modern web applications that solve real problems. 
+          Whether you need a sleek business website, a custom web app, or help bringing 
+          your digital vision to life, I've got you covered. I love turning complex ideas 
+          into simple, beautiful, and functional solutions.
         </Typography>
       </motion.div>
 
@@ -192,12 +192,10 @@ const Home = () => {
             variant="contained"
             color="primary"
             size="large"
-            startIcon={<DownloadIcon />}
+            href="/experience"
             component={motion.a}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            href="/Resume_Stephenson_Shaun.pdf"
-            download
             sx={{ 
               px: 4,
               py: 1.5,
@@ -211,13 +209,13 @@ const Home = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Download Resume
+            View My Experience
           </Button>
           <Button
             variant="outlined"
             color="primary"
             size="large"
-            href="#contact"
+            href="/contact"
             component={motion.a}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -234,7 +232,7 @@ const Home = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Contact Me
+            Let's Work Together
           </Button>
         </Box>
       </motion.div>
