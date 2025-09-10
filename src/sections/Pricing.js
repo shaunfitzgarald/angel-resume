@@ -28,6 +28,7 @@ import {
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Link } from 'react-router-dom';
+import { alpha } from '@mui/material/styles';
 
 const basePackages = [
   {
@@ -136,6 +137,11 @@ function PricingCard({ pkg }) {
           size="large"
           component={Link}
           to="/contact"
+          onClick={() => {
+            try {
+              window.dispatchEvent(new CustomEvent('cta-click', { detail: { page: 'pricing', cta: 'get_started', pkg: pkg.name } }));
+            } catch (_) {}
+          }}
         >
           Get Started
         </Button>
@@ -150,8 +156,13 @@ export default function Pricing() {
   }, []);
 
   const [hoveredCol, setHoveredCol] = useState(null);
-  const colHoverSx = (key) => ({
-    backgroundColor: hoveredCol === key ? 'action.selected' : undefined,
+  const colHoverSx = (key) => (theme) => ({
+    backgroundColor:
+      hoveredCol === key
+        ? theme.palette.action.selected
+        : key === 'business'
+        ? alpha(theme.palette.primary.main, 0.06)
+        : undefined,
     transition: 'background-color 120ms ease',
   });
 
@@ -178,45 +189,80 @@ export default function Pricing() {
         <Typography variant="h5" gutterBottom>
           Feature Comparison
         </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: { xs: 'block', sm: 'none' }, mb: 1 }}
+        >
+          Swipe to see more →
+        </Typography>
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 2,
-          overflow: 'hidden',
+          overflowX: 'auto',
+          overflowY: 'hidden',
           border: '1px solid',
           borderColor: 'divider',
           backgroundColor: 'background.paper',
+          WebkitOverflowScrolling: 'touch',
         }}>
           <Table
             size="small"
             aria-label="pricing comparison table"
             sx={{
+              minWidth: { xs: 680, sm: 760 },
+              '& td, & th': { whiteSpace: 'nowrap', px: 1.25, py: 1 },
               '& tbody tr:nth-of-type(odd)': { backgroundColor: 'action.hover' },
               '& tbody tr:hover': { backgroundColor: 'action.selected' },
             }}
           >
-            <TableHead sx={{ '& th': { backgroundColor: 'primary.main', color: 'primary.contrastText', fontWeight: 600 } }}>
+            <TableHead sx={{
+              '& th': {
+                backgroundColor: 'primary.main',
+                color: 'primary.contrastText',
+                fontWeight: 600,
+                position: 'sticky',
+                top: 0,
+                zIndex: 2,
+              },
+            }}>
               <TableRow>
-                <TableCell sx={{ width: { xs: '40%', md: '35%' } }}></TableCell>
+                <TableCell sx={{
+                  width: { xs: '55%', sm: '45%', md: '35%' },
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 3,
+                  backgroundColor: 'primary.main',
+                }}></TableCell>
                 <TableCell
                   align="center"
-                  sx={colHoverSx('starter')}
+                  sx={[colHoverSx('starter'), { cursor: 'pointer' }]}
                   onMouseEnter={() => setHoveredCol('starter')}
                   onMouseLeave={() => setHoveredCol(null)}
+                  tabIndex={0}
+                  onFocus={() => setHoveredCol('starter')}
+                  onBlur={() => setHoveredCol(null)}
                 >
                   <Typography variant="subtitle2">Starter</Typography>
                 </TableCell>
                 <TableCell
                   align="center"
-                  sx={colHoverSx('business')}
+                  sx={[colHoverSx('business'), { cursor: 'pointer' }]}
                   onMouseEnter={() => setHoveredCol('business')}
                   onMouseLeave={() => setHoveredCol(null)}
+                  tabIndex={0}
+                  onFocus={() => setHoveredCol('business')}
+                  onBlur={() => setHoveredCol(null)}
                 >
                   <Typography variant="subtitle2">Business</Typography>
                 </TableCell>
                 <TableCell
                   align="center"
-                  sx={colHoverSx('advanced')}
+                  sx={[colHoverSx('advanced'), { cursor: 'pointer' }]}
                   onMouseEnter={() => setHoveredCol('advanced')}
                   onMouseLeave={() => setHoveredCol(null)}
+                  tabIndex={0}
+                  onFocus={() => setHoveredCol('advanced')}
+                  onBlur={() => setHoveredCol(null)}
                 >
                   <Typography variant="subtitle2">Advanced</Typography>
                 </TableCell>
@@ -224,7 +270,7 @@ export default function Pricing() {
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>Pages</TableCell>
+                <TableCell sx={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }}>Pages</TableCell>
                 <TableCell
                   align="center"
                   sx={colHoverSx('starter')}
@@ -251,7 +297,7 @@ export default function Pricing() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Design</TableCell>
+                <TableCell sx={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }}>Design</TableCell>
                 <TableCell
                   align="center"
                   sx={colHoverSx('starter')}
@@ -278,7 +324,7 @@ export default function Pricing() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>SEO</TableCell>
+                <TableCell sx={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }}>SEO</TableCell>
                 <TableCell
                   align="center"
                   sx={colHoverSx('starter')}
@@ -305,7 +351,7 @@ export default function Pricing() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Forms & Integrations</TableCell>
+                <TableCell sx={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }}>Forms & Integrations</TableCell>
                 <TableCell
                   align="center"
                   sx={colHoverSx('starter')}
@@ -332,7 +378,7 @@ export default function Pricing() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Revisions</TableCell>
+                <TableCell sx={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }}>Revisions</TableCell>
                 <TableCell
                   align="center"
                   sx={colHoverSx('starter')}
@@ -359,7 +405,7 @@ export default function Pricing() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Timeline</TableCell>
+                <TableCell sx={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }}>Timeline</TableCell>
                 <TableCell
                   align="center"
                   sx={colHoverSx('starter')}
@@ -519,7 +565,18 @@ export default function Pricing() {
       </Box>
 
       <Box textAlign="center" mt={4}>
-        <Button component={Link} to="/contact" variant="contained" color="primary" size="large">
+        <Button
+          component={Link}
+          to="/contact"
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={() => {
+            try {
+              window.dispatchEvent(new CustomEvent('cta-click', { detail: { page: 'pricing', cta: 'request_quote' } }));
+            } catch (_) {}
+          }}
+        >
           Request a Quote
         </Button>
       </Box>
