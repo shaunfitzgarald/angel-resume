@@ -1,26 +1,31 @@
-// src/services/aiService.js
-const DEFAULT_ENDPOINT =
-  process.env.REACT_APP_CHAT_ENDPOINT || '/api/chat';
+/**
+ * AI Service for handling chat interactions with the backend
+ */
 
-// Keep only the last N turns to reduce token fluff
-const MAX_TURNS = 10;
+// Base URL for API calls - adjust as needed for your environment
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
-export async function sendChat(messages, endpoint = DEFAULT_ENDPOINT) {
-  const trimmed = Array.isArray(messages)
-    ? messages.slice(-MAX_TURNS)
-    : [];
-
-  const res = await fetch(endpoint, {
+/**
+ * Sends chat messages to the AI service and returns the response
+ * @param {Array} messages - Array of message objects with role and content properties
+ * @returns {Promise<string>} - The AI response text
+ */
+export async function sendChat(messages) {
+  const res = await fetch(`${API_URL}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: trimmed }),
+    body: JSON.stringify({ messages }),
   });
-
   if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`AI endpoint error (${res.status}): ${text || 'unknown'}`);
+    let text = '';
+    try { text = await res.text(); } catch {}
+    throw new Error(`Chat request failed: ${res.status} ${text}`);
   }
-
   const data = await res.json().catch(() => ({}));
-  return data.reply || '(no reply)';
+  return data.reply;
 }
+
+// Default export for the entire service
+export default {
+  sendChat,
+};
