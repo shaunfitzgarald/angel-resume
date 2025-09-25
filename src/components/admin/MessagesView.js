@@ -56,6 +56,9 @@ const MessagesView = () => {
       }));
       setMessages(messagesData);
       setLoading(false);
+    }, (error) => {
+      console.error('Error loading messages:', error);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -244,7 +247,7 @@ const MessagesView = () => {
                 </Typography>
                 <Paper sx={{ p: 2, backgroundColor: 'grey.50' }}>
                   <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {selectedMessage.message || 'No message content'}
+                    {selectedMessage.message || selectedMessage.content || 'No message content'}
                   </Typography>
                 </Paper>
               </Box>

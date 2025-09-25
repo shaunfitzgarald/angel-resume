@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, query, orderBy, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import {
   Box,
   Typography,
@@ -44,6 +44,34 @@ const TestimonialsManagement = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] = useState(null);
+
+  // Function to clean testimonial content from CSS artifacts
+  const cleanTestimonialContent = (content) => {
+    if (!content) return '';
+    
+    // Remove CSS code that might be embedded in the content
+    let cleaned = content
+      // Remove the exact CSS pattern we're seeing
+      .replace(/;font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0\.3;font-family:serif;\}\}\;\s*/g, '')
+      // Remove any CSS properties that might be embedded
+      .replace(/font-size:\d+rem;color:[^;]+;position:[^;]+;top:[^;]+;left:[^;]+;opacity:[^;]+;font-family:[^;]+;\}\}\;\s*/g, '')
+      // Remove any CSS-like patterns
+      .replace(/[;{}#0-9]+rem[;{}#0-9]+color[;{}#0-9]+position[;{}#0-9]+absolute[;{}#0-9]+top[;{}#0-9]+left[;{}#0-9]+opacity[;{}#0-9]+font-family[;{}#0-9]+serif[;{}#0-9]+/g, '')
+      // Remove any remaining CSS artifacts - be more aggressive
+      .replace(/[;{}#0-9]+rem[^a-zA-Z]*/g, '')
+      .replace(/color:[^;]+;/g, '')
+      .replace(/position:[^;]+;/g, '')
+      .replace(/top:[^;]+;/g, '')
+      .replace(/left:[^;]+;/g, '')
+      .replace(/opacity:[^;]+;/g, '')
+      .replace(/font-family:[^;]+;/g, '')
+      .replace(/[{};]/g, '')
+      // Clean up multiple spaces
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    return cleaned;
+  };
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -62,7 +90,11 @@ const TestimonialsManagement = () => {
         id: doc.id,
         ...doc.data()
       }));
+      console.log('Admin testimonials loaded:', testimonialsData); // Debug log
       setTestimonials(testimonialsData);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error loading admin testimonials:', error);
       setLoading(false);
     });
 
@@ -76,7 +108,7 @@ const TestimonialsManagement = () => {
         name: testimonial.name || '',
         company: testimonial.company || '',
         role: testimonial.role || '',
-        content: testimonial.content || '',
+        content: cleanTestimonialContent(testimonial.content) || '',
         rating: testimonial.rating || 5,
         isVisible: testimonial.isVisible !== false,
         avatar: testimonial.avatar || '',
@@ -117,14 +149,19 @@ const TestimonialsManagement = () => {
     try {
       const testimonialData = {
         ...formData,
-        createdAt: editingTestimonial ? editingTestimonial.createdAt : new Date(),
-        updatedAt: new Date()
+        content: cleanTestimonialContent(formData.content), // Clean content before saving
+        createdAt: editingTestimonial ? editingTestimonial.createdAt : serverTimestamp(),
+        updatedAt: serverTimestamp()
       };
+
+      console.log('Saving testimonial:', testimonialData); // Debug log
 
       if (editingTestimonial) {
         await updateDoc(doc(db, 'testimonials', editingTestimonial.id), testimonialData);
+        console.log('Testimonial updated successfully');
       } else {
-        await addDoc(collection(db, 'testimonials'), testimonialData);
+        const docRef = await addDoc(collection(db, 'testimonials'), testimonialData);
+        console.log('Testimonial created successfully with ID:', docRef.id);
       }
 
       handleCloseDialog();
@@ -153,6 +190,51 @@ const TestimonialsManagement = () => {
     }
   };
 
+  const handleCleanAllTestimonials = async () => {
+    if (window.confirm('This will clean all testimonial content to remove CSS artifacts. Continue?')) {
+      try {
+        const promises = testimonials.map(testimonial => {
+          let cleanedContent = testimonial.content;
+          
+          // More aggressive cleaning for the specific CSS issue
+          if (cleanedContent && typeof cleanedContent === 'string') {
+            // Remove the exact CSS pattern we're seeing
+            cleanedContent = cleanedContent
+              .replace(/;font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0\.3;font-family:serif;\}\}\;\s*/g, '')
+              .replace(/font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0\.3;font-family:serif;\}\}\;\s*/g, '')
+              .replace(/[;{}#0-9]+rem[^a-zA-Z]*/g, '')
+              .replace(/color:[^;]+;/g, '')
+              .replace(/position:[^;]+;/g, '')
+              .replace(/top:[^;]+;/g, '')
+              .replace(/left:[^;]+;/g, '')
+              .replace(/opacity:[^;]+;/g, '')
+              .replace(/font-family:[^;]+;/g, '')
+              .replace(/[{};]/g, '')
+              .replace(/\s+/g, ' ')
+              .trim();
+          }
+          
+          if (cleanedContent !== testimonial.content) {
+            console.log(`Cleaning testimonial ${testimonial.id}:`);
+            console.log(`  Before: "${testimonial.content}"`);
+            console.log(`  After:  "${cleanedContent}"`);
+            return updateDoc(doc(db, 'testimonials', testimonial.id), {
+              content: cleanedContent
+            });
+          }
+          return Promise.resolve();
+        });
+        
+        await Promise.all(promises);
+        console.log('All testimonials cleaned successfully');
+        alert('All testimonials have been cleaned successfully! Please refresh the page to see the changes.');
+      } catch (error) {
+        console.error('Error cleaning testimonials:', error);
+        alert('Error cleaning testimonials. Check console for details.');
+      }
+    }
+  };
+
   const formatDate = (timestamp) => {
     if (!timestamp) return 'N/A';
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -178,13 +260,23 @@ const TestimonialsManagement = () => {
             Manage client testimonials and reviews for your website.
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-        >
-          Add Testimonial
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
+          >
+            Add Testimonial
+          </Button>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={handleCleanAllTestimonials}
+            disabled={testimonials.length === 0}
+          >
+            Clean All Content
+          </Button>
+        </Box>
       </Box>
 
       {testimonials.length === 0 ? (
@@ -229,7 +321,7 @@ const TestimonialsManagement = () => {
                   </Box>
 
                   <Typography variant="body2" sx={{ mb: 2, minHeight: 60 }}>
-                    {testimonial.content || 'No content provided.'}
+                    {cleanTestimonialContent(testimonial.content) || 'No content provided.'}
                   </Typography>
 
                   {testimonial.project && (

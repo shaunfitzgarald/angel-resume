@@ -35,6 +35,7 @@ import MessagesView from '../components/admin/MessagesView';
 import ChatAnalytics from '../components/admin/ChatAnalytics';
 import WebsiteAnalytics from '../components/admin/WebsiteAnalytics';
 import TestimonialsManagement from '../components/admin/TestimonialsManagement';
+import TestimonialsDebug from '../components/admin/TestimonialsDebug';
 
 const AdminDashboard = () => {
   const { currentUser, logout } = useAuth();
@@ -71,7 +72,8 @@ const AdminDashboard = () => {
     { label: 'Messages', icon: <EmailIcon />, component: <MessagesView /> },
     { label: 'Chat Analytics', icon: <ChatIcon />, component: <ChatAnalytics /> },
     { label: 'Website Analytics', icon: <AnalyticsIcon />, component: <WebsiteAnalytics /> },
-    { label: 'Testimonials', icon: <TestimonialsIcon />, component: <TestimonialsManagement /> }
+    { label: 'Testimonials', icon: <TestimonialsIcon />, component: <TestimonialsManagement /> },
+    { label: 'Testimonials Debug', icon: <TestimonialsIcon />, component: <TestimonialsDebug /> },
   ];
 
   return (

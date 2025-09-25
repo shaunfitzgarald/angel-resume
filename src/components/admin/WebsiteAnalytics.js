@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { analytics } from '../../firebase';
+import { db } from '../../firebase';
+import { collection, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
 import {
   Box,
   Typography,
@@ -50,42 +51,195 @@ const WebsiteAnalytics = () => {
 
   const loadAnalyticsData = async () => {
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setAnalyticsData({
-        totalViews: 1247,
-        uniqueVisitors: 892,
-        averageSessionDuration: 245, // seconds
-        bounceRate: 34.2,
-        topPages: [
-          { path: '/', views: 456, title: 'Home/About', icon: <HomeIcon /> },
-          { path: '/pricing', views: 234, title: 'Pricing', icon: <MoneyIcon /> },
-          { path: '/projects', views: 189, title: 'Projects', icon: <CodeIcon /> },
-          { path: '/contact', views: 156, title: 'Contact', icon: <EmailIcon /> },
-          { path: '/experience', views: 134, title: 'Experience', icon: <WorkIcon /> },
-          { path: '/skills', views: 78, title: 'Skills', icon: <CodeIcon /> }
-        ],
-        trafficSources: [
-          { source: 'Direct', visitors: 456, percentage: 51.1 },
-          { source: 'Google Search', visitors: 234, percentage: 26.2 },
-          { source: 'Social Media', visitors: 123, percentage: 13.8 },
-          { source: 'Referral', visitors: 79, percentage: 8.9 }
-        ],
-        deviceTypes: [
-          { type: 'Desktop', visitors: 567, percentage: 63.6 },
-          { type: 'Mobile', visitors: 267, percentage: 29.9 },
-          { type: 'Tablet', visitors: 58, percentage: 6.5 }
-        ],
-        recentActivity: [
-          { time: '2 minutes ago', action: 'Page view', page: '/pricing', user: 'Anonymous' },
-          { time: '5 minutes ago', action: 'Chat started', page: '/', user: 'Anonymous' },
-          { time: '8 minutes ago', action: 'Contact form', page: '/contact', user: 'john@example.com' },
-          { time: '12 minutes ago', action: 'Page view', page: '/projects', user: 'Anonymous' },
-          { time: '15 minutes ago', action: 'Page view', page: '/', user: 'Anonymous' }
-        ]
+    try {
+      // Calculate date range
+      const now = new Date();
+      const daysAgo = parseInt(dateFilter);
+      const startDate = new Date(now.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
+
+      // Get page views (we'll filter by date in JavaScript)
+      const pageViewsQuery = query(
+        collection(db, 'analytics'),
+        where('type', '==', 'page_view'),
+        orderBy('timestamp', 'desc'),
+        limit(200)
+      );
+
+      const pageViewsSnapshot = await getDocs(pageViewsQuery);
+      const allPageViews = pageViewsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Filter page views by date range
+      const pageViews = allPageViews.filter(pv => {
+        const pvDate = pv.timestamp?.toDate ? pv.timestamp.toDate() : new Date(pv.timestamp);
+        return pvDate >= startDate;
       });
-      setLoading(false);
-    }, 1000);
+
+      // Get user interactions (we'll filter by date in JavaScript)
+      const interactionsQuery = query(
+        collection(db, 'analytics'),
+        where('type', '==', 'user_interaction'),
+        orderBy('timestamp', 'desc'),
+        limit(100)
+      );
+
+      const interactionsSnapshot = await getDocs(interactionsQuery);
+      const allInteractions = interactionsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Filter interactions by date range
+      const interactions = allInteractions.filter(interaction => {
+        const interactionDate = interaction.timestamp?.toDate ? interaction.timestamp.toDate() : new Date(interaction.timestamp);
+        return interactionDate >= startDate;
+      });
+
+      // Calculate unique visitors
+      const uniqueVisitors = new Set(pageViews.map(pv => pv.fingerprint)).size;
+      const totalViews = pageViews.length;
+
+      // Calculate page statistics
+      const pageStats = {};
+      pageViews.forEach(pv => {
+        const page = pv.page || '/';
+        if (!pageStats[page]) {
+          pageStats[page] = { views: 0, title: getPageTitle(page) };
+        }
+        pageStats[page].views++;
+      });
+
+      const topPages = Object.entries(pageStats)
+        .map(([path, stats]) => ({
+          path,
+          views: stats.views,
+          title: stats.title,
+          icon: getPageIcon(path)
+        }))
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 6);
+
+      // Calculate traffic sources
+      const referrerStats = {};
+      pageViews.forEach(pv => {
+        const referrer = pv.referrer || 'Direct';
+        const source = getTrafficSource(referrer);
+        if (!referrerStats[source]) {
+          referrerStats[source] = 0;
+        }
+        referrerStats[source]++;
+      });
+
+      const totalReferrers = Object.values(referrerStats).reduce((sum, count) => sum + count, 0);
+      const trafficSources = Object.entries(referrerStats)
+        .map(([source, visitors]) => ({
+          source,
+          visitors,
+          percentage: Math.round((visitors / totalReferrers) * 100 * 10) / 10
+        }))
+        .sort((a, b) => b.visitors - a.visitors);
+
+      // Calculate device types
+      const deviceStats = {};
+      pageViews.forEach(pv => {
+        const device = getDeviceType(pv.userAgent);
+        if (!deviceStats[device]) {
+          deviceStats[device] = 0;
+        }
+        deviceStats[device]++;
+      });
+
+      const totalDevices = Object.values(deviceStats).reduce((sum, count) => sum + count, 0);
+      const deviceTypes = Object.entries(deviceStats)
+        .map(([type, visitors]) => ({
+          type,
+          visitors,
+          percentage: Math.round((visitors / totalDevices) * 100 * 10) / 10
+        }))
+        .sort((a, b) => b.visitors - a.visitors);
+
+      // Generate recent activity
+      const recentActivity = interactions.slice(0, 10).map(interaction => ({
+        time: formatTimeAgo(interaction.timestamp),
+        action: getActionName(interaction.interaction),
+        page: interaction.url ? new URL(interaction.url).pathname : '/',
+        user: 'Anonymous'
+      }));
+
+      // Calculate average session duration (mock for now)
+      const averageSessionDuration = Math.floor(Math.random() * 300) + 120; // 2-7 minutes
+      const bounceRate = Math.floor(Math.random() * 20) + 25; // 25-45%
+
+      setAnalyticsData({
+        totalViews,
+        uniqueVisitors,
+        averageSessionDuration,
+        bounceRate,
+        topPages,
+        trafficSources,
+        deviceTypes,
+        recentActivity
+      });
+    } catch (error) {
+      console.error('Error loading analytics data:', error);
+    }
+    setLoading(false);
+  };
+
+  // Helper functions
+  const getPageTitle = (path) => {
+    const titles = {
+      '/': 'Home/About',
+      '/experience': 'Experience',
+      '/skills': 'Skills',
+      '/projects': 'Projects',
+      '/pricing': 'Pricing',
+      '/testimonials': 'Testimonials',
+      '/contact': 'Contact',
+      '/help': 'Help'
+    };
+    return titles[path] || path;
+  };
+
+  const getTrafficSource = (referrer) => {
+    if (!referrer || referrer === '') return 'Direct';
+    if (referrer.includes('google')) return 'Google Search';
+    if (referrer.includes('facebook') || referrer.includes('twitter') || referrer.includes('linkedin')) return 'Social Media';
+    return 'Referral';
+  };
+
+  const getDeviceType = (userAgent) => {
+    if (/tablet|ipad/i.test(userAgent)) return 'Tablet';
+    if (/mobile|android|iphone/i.test(userAgent)) return 'Mobile';
+    return 'Desktop';
+  };
+
+  const getActionName = (interaction) => {
+    const actions = {
+      'button_click': 'Button clicked',
+      'link_click': 'Link clicked',
+      'form_submission': 'Form submitted',
+      'scroll_depth': 'Page scrolled',
+      'time_on_page': 'Time on page'
+    };
+    return actions[interaction] || interaction;
+  };
+
+  const formatTimeAgo = (timestamp) => {
+    if (!timestamp) return 'Unknown';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} days ago`;
   };
 
   const formatDuration = (seconds) => {

@@ -34,6 +34,7 @@ import {
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
+import { trackPageView } from './utils/analytics';
 
 
 // Import sections
@@ -61,13 +62,36 @@ import { AuthProvider } from './contexts/AuthContext';
 
 const drawerWidth = 240;
 
-// Scroll to top on route change
+// Scroll to top on route change and track page views
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Track page view
+    const pageTitle = getPageTitle(pathname);
+    trackPageView(pathname, pageTitle);
   }, [pathname]);
   return null;
+}
+
+// Get page title based on path
+function getPageTitle(pathname) {
+  const titles = {
+    '/': 'About - Shaun Fitzgarald',
+    '/experience': 'Experience - Shaun Fitzgarald',
+    '/skills': 'Skills - Shaun Fitzgarald',
+    '/projects': 'Projects - Shaun Fitzgarald',
+    '/pricing': 'Pricing - Shaun Fitzgarald',
+    '/testimonials': 'Testimonials - Shaun Fitzgarald',
+    '/contact': 'Contact - Shaun Fitzgarald',
+    '/help': 'Help - Shaun Fitzgarald',
+    '/admin/login': 'Admin Login - Shaun Fitzgarald',
+    '/admin': 'Admin Dashboard - Shaun Fitzgarald',
+    '/terms': 'Terms of Service - Shaun Fitzgarald',
+    '/privacy': 'Privacy Policy - Shaun Fitzgarald'
+  };
+  return titles[pathname] || 'Shaun Fitzgarald';
 }
 
 // Scroll to top button component
