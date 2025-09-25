@@ -3,7 +3,7 @@ import { Box, Paper, IconButton, Typography, TextField, Button, Stack, Avatar, T
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendChat } from '../services/aiService';
-import { trackChatEvent, trackChatSession } from '../utils/analytics';
+import { trackChatEvent, startChatSession, updateChatSession, endChatSession } from '../utils/analytics';
 
 const CONSENT_STORAGE_KEY = 'cookieConsent.v1';
 function readConsent() {
@@ -73,6 +73,7 @@ export default function ChatWidget({ embedded = false }) {
   useEffect(() => {
     if (open) {
       trackChatEvent('chat_opened', { sessionId });
+      startChatSession(sessionId);
     }
   }, [open, sessionId]);
 
@@ -81,8 +82,7 @@ export default function ChatWidget({ embedded = false }) {
     return () => {
       if (open && messages.length > 1) {
         const sessionDuration = Date.now() - sessionStartTime;
-        trackChatSession({
-          sessionId,
+        endChatSession(sessionId, {
           messageCount: messages.length,
           duration: sessionDuration,
           endedAt: new Date().toISOString()
@@ -111,6 +111,13 @@ export default function ChatWidget({ embedded = false }) {
       messageCount: next.length 
     });
     
+    // Update chat session with user message
+    updateChatSession(sessionId, {
+      role: 'user',
+      content: text,
+      messageType: 'user_message'
+    });
+    
     try { window.dispatchEvent(new CustomEvent('chat-sent', { detail: { text } })); } catch {}
     setLoading(true);
     try {
@@ -123,6 +130,13 @@ export default function ChatWidget({ embedded = false }) {
         responseText: reply, 
         messageCount: next.length + 1,
         success: true
+      });
+      
+      // Update chat session with assistant response
+      updateChatSession(sessionId, {
+        role: 'assistant',
+        content: reply,
+        messageType: 'assistant_response'
       });
       
       try { window.dispatchEvent(new CustomEvent('chat-response', { detail: { ok: true } })); } catch {}

@@ -30,27 +30,103 @@ const Testimonials = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // Function to clean testimonial content from CSS artifacts
+  const cleanTestimonialContent = (content) => {
+    if (!content) return 'No content available';
+    
+    // Remove CSS code that might be embedded in the content
+    let cleaned = content
+      // Remove the exact CSS pattern we're seeing
+      .replace(/;font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0\.3;font-family:serif;\}\}\;\s*/g, '')
+      // Remove any CSS properties that might be embedded
+      .replace(/font-size:\d+rem;color:[^;]+;position:[^;]+;top:[^;]+;left:[^;]+;opacity:[^;]+;font-family:[^;]+;\}\}\;\s*/g, '')
+      // Remove any CSS-like patterns
+      .replace(/[;{}#0-9]+rem[;{}#0-9]+color[;{}#0-9]+position[;{}#0-9]+absolute[;{}#0-9]+top[;{}#0-9]+left[;{}#0-9]+opacity[;{}#0-9]+font-family[;{}#0-9]+serif[;{}#0-9]+/g, '')
+      // Remove any remaining CSS artifacts - be more aggressive
+      .replace(/[;{}#0-9]+rem[^a-zA-Z]*/g, '')
+      .replace(/color:[^;]+;/g, '')
+      .replace(/position:[^;]+;/g, '')
+      .replace(/top:[^;]+;/g, '')
+      .replace(/left:[^;]+;/g, '')
+      .replace(/opacity:[^;]+;/g, '')
+      .replace(/font-family:[^;]+;/g, '')
+      .replace(/[{};]/g, '')
+      // Clean up multiple spaces
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    return cleaned;
+  };
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
   useEffect(() => {
-    const q = query(
-      collection(db, 'testimonials'),
-      where('isVisible', '==', true),
-      orderBy('createdAt', 'desc')
-    );
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const testimonialsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTestimonials(testimonialsData);
-      setLoading(false);
-    });
+    // First try the compound query, if it fails, fall back to simple query
+    const tryCompoundQuery = async () => {
+      try {
+        const q = query(
+          collection(db, 'testimonials'),
+          where('isVisible', '==', true),
+          orderBy('createdAt', 'desc')
+        );
+        
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          const testimonialsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          console.log('Testimonials loaded (compound query):', testimonialsData);
+          setTestimonials(testimonialsData);
+          setLoading(false);
+        }, (error) => {
+          console.error('Compound query failed, trying simple query:', error);
+          // Fall back to simple query
+          trySimpleQuery();
+        });
 
-    return () => unsubscribe();
+        return unsubscribe;
+      } catch (error) {
+        console.error('Compound query setup failed, trying simple query:', error);
+        trySimpleQuery();
+      }
+    };
+
+    const trySimpleQuery = () => {
+      const q = query(collection(db, 'testimonials'));
+      
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const allTestimonials = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Filter visible testimonials in JavaScript
+        const visibleTestimonials = allTestimonials.filter(testimonial => 
+          testimonial.isVisible === true
+        );
+        
+        // Sort by createdAt in JavaScript
+        visibleTestimonials.sort((a, b) => {
+          const aTime = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+          const bTime = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+          return bTime - aTime; // Descending order
+        });
+        
+        console.log('Testimonials loaded (simple query):', visibleTestimonials);
+        setTestimonials(visibleTestimonials);
+        setLoading(false);
+      }, (error) => {
+        console.error('Error loading testimonials:', error);
+        setLoading(false);
+      });
+
+      return unsubscribe;
+    };
+
+    const unsubscribe = tryCompoundQuery();
+    return unsubscribe;
   }, []);
 
   if (loading) {
@@ -205,7 +281,7 @@ const Testimonials = () => {
                           size="small"
                           sx={{ mr: 1 }}
                         />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{ color: '#666666' }}>
                           ({testimonial.rating || 5}/5)
                         </Typography>
                       </Box>
@@ -217,7 +293,7 @@ const Testimonials = () => {
                           fontStyle: 'italic',
                           lineHeight: 1.6,
                           mb: 3,
-                          color: 'text.primary',
+                          color: '#333333',
                           position: 'relative',
                           '&::before': {
                             content: '"',
@@ -231,7 +307,14 @@ const Testimonials = () => {
                           }
                         }}
                       >
-                        {testimonial.content}
+                        {(() => {
+                          const content = testimonial.content || '';
+                          // Emergency fix for the specific CSS issue
+                          if (content.includes(';font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0.3;font-family:serif;}};}')) {
+                            return content.replace(/;font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0\.3;font-family:serif;\}\}\;\s*/, '');
+                          }
+                          return cleanTestimonialContent(content);
+                        })()}
                       </Typography>
 
                       {/* Client Info */}
@@ -249,12 +332,12 @@ const Testimonials = () => {
                           {testimonial.name?.charAt(0) || <PersonIcon />}
                         </Avatar>
                         <Box sx={{ flexGrow: 1 }}>
-                          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#333333' }}>
                             {testimonial.name || 'Anonymous Client'}
                           </Typography>
                           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                            <BusinessIcon sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
-                            <Typography variant="body2" color="text.secondary">
+                            <BusinessIcon sx={{ mr: 1, fontSize: 16, color: '#666666' }} />
+                            <Typography variant="body2" sx={{ color: '#666666' }}>
                               {testimonial.role && testimonial.company 
                                 ? `${testimonial.role} at ${testimonial.company}`
                                 : testimonial.company || testimonial.role || 'Client'
