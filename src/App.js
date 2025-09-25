@@ -70,7 +70,9 @@ function ScrollToTop() {
     
     // Track page view
     const pageTitle = getPageTitle(pathname);
-    trackPageView(pathname, pageTitle);
+    trackPageView(pathname, pageTitle).catch(error => {
+      console.error('Error tracking page view:', error);
+    });
   }, [pathname]);
   return null;
 }

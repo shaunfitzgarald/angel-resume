@@ -246,7 +246,7 @@ const MessagesView = () => {
                   Message:
                 </Typography>
                 <Paper sx={{ p: 2, backgroundColor: 'grey.50' }}>
-                  <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                  <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', color: '#000000' }}>
                     {selectedMessage.message || selectedMessage.content || 'No message content'}
                   </Typography>
                 </Paper>
