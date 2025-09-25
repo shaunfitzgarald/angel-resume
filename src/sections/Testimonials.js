@@ -63,69 +63,35 @@ const Testimonials = () => {
   }, []);
 
   useEffect(() => {
-    // First try the compound query, if it fails, fall back to simple query
-    const tryCompoundQuery = async () => {
-      try {
-        const q = query(
-          collection(db, 'testimonials'),
-          where('isVisible', '==', true),
-          orderBy('createdAt', 'desc')
-        );
-        
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-          const testimonialsData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          console.log('Testimonials loaded (compound query):', testimonialsData);
-          setTestimonials(testimonialsData);
-          setLoading(false);
-        }, (error) => {
-          console.error('Compound query failed, trying simple query:', error);
-          // Fall back to simple query
-          trySimpleQuery();
-        });
-
-        return unsubscribe;
-      } catch (error) {
-        console.error('Compound query setup failed, trying simple query:', error);
-        trySimpleQuery();
-      }
-    };
-
-    const trySimpleQuery = () => {
-      const q = query(collection(db, 'testimonials'));
+    // Simplified approach - just use the simple query to avoid async issues
+    const q = query(collection(db, 'testimonials'));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const allTestimonials = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
       
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const allTestimonials = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        
-        // Filter visible testimonials in JavaScript
-        const visibleTestimonials = allTestimonials.filter(testimonial => 
-          testimonial.isVisible === true
-        );
-        
-        // Sort by createdAt in JavaScript
-        visibleTestimonials.sort((a, b) => {
-          const aTime = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
-          const bTime = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
-          return bTime - aTime; // Descending order
-        });
-        
-        console.log('Testimonials loaded (simple query):', visibleTestimonials);
-        setTestimonials(visibleTestimonials);
-        setLoading(false);
-      }, (error) => {
-        console.error('Error loading testimonials:', error);
-        setLoading(false);
+      // Filter visible testimonials in JavaScript
+      const visibleTestimonials = allTestimonials.filter(testimonial => 
+        testimonial.isVisible === true
+      );
+      
+      // Sort by createdAt in JavaScript
+      visibleTestimonials.sort((a, b) => {
+        const aTime = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const bTime = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return bTime - aTime; // Descending order
       });
+      
+      console.log('Testimonials loaded:', visibleTestimonials);
+      setTestimonials(visibleTestimonials);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error loading testimonials:', error);
+      setLoading(false);
+    });
 
-      return unsubscribe;
-    };
-
-    const unsubscribe = tryCompoundQuery();
     return unsubscribe;
   }, []);
 
@@ -307,14 +273,7 @@ const Testimonials = () => {
                           }
                         }}
                       >
-                        {(() => {
-                          const content = testimonial.content || '';
-                          // Emergency fix for the specific CSS issue
-                          if (content.includes(';font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0.3;font-family:serif;}};}')) {
-                            return content.replace(/;font-size:4rem;color:#0ACF83;position:absolute;top:-10px;left:-10px;opacity:0\.3;font-family:serif;\}\}\;\s*/, '');
-                          }
-                          return cleanTestimonialContent(content);
-                        })()}
+                        {cleanTestimonialContent(testimonial.content)}
                       </Typography>
 
                       {/* Client Info */}
