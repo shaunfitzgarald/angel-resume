@@ -29,12 +29,15 @@ const Footer = () => {
             shaunfitzgarald
           </Link>
         </Typography>
-        <Stack direction="row" spacing={2} justifyContent="center">
+        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
           <Link component={RouterLink} to="/terms" color="text.secondary" underline="hover" variant="body2">
             Terms of Service
           </Link>
           <Link component={RouterLink} to="/privacy" color="text.secondary" underline="hover" variant="body2">
             Privacy Policy
+          </Link>
+          <Link component={RouterLink} to="/admin/login" color="text.secondary" underline="hover" variant="body2">
+            Admin
           </Link>
           <Link
             component="button"

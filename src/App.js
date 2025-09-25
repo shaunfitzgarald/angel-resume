@@ -29,6 +29,7 @@ import {
   KeyboardArrowUp as KeyboardArrowUpIcon,
   AttachMoney as AttachMoneyIcon,
   HelpOutline as HelpOutlineIcon,
+  RateReview as RateReviewIcon,
 } from '@mui/icons-material';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
@@ -45,13 +46,18 @@ import Contact from './sections/Contact';
 import Education from './sections/Education';
 import Footer from './sections/Footer';
 import Pricing from './sections/Pricing';
+import Testimonials from './sections/Testimonials';
 
 // Import pages
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Help from './pages/Help';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import ChatWidget from './components/ChatWidget';
 import CookieConsent from './components/CookieConsent';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './contexts/AuthContext';
 
 const drawerWidth = 240;
 
@@ -111,6 +117,7 @@ function App() {
     // { text: 'Education', icon: <SchoolIcon />, path: '/education' },
     { text: 'Projects', icon: <DataObjectIcon />, path: '/projects' },
     { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
+    { text: 'Testimonials', icon: <RateReviewIcon />, path: '/testimonials' },
     { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
     { text: 'Help', icon: <HelpOutlineIcon />, path: '/help' },
   ];
@@ -164,10 +171,11 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <CssBaseline />
-        <ScrollToTop />
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <CssBaseline />
+          <ScrollToTop />
 
         <AppBar
           position="fixed"
@@ -252,10 +260,19 @@ function App() {
               {/* <Route path="/education" element={<Education />} /> */}
               <Route path="/projects" element={<Projects />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/help" element={<Help />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
             </Routes>
           </Container>
           <Footer />
@@ -270,10 +287,11 @@ function App() {
             <KeyboardArrowUpIcon />
           </IconButton>
         </ScrollTop>
-      </Box>
-      <CookieConsent />
-      <ChatWidget />
-    </ThemeProvider>
+        </Box>
+        <CookieConsent />
+        <ChatWidget />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

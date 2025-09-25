@@ -1,12 +1,37 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Messages collection - contact form submissions
     match /messages/{messageId} {
       allow read: if request.auth != null;
       allow create: if true; // Allow anyone to create messages (for contact form)
       allow update, delete: if request.auth != null;
     }
     
+    // Testimonials collection - client reviews
+    match /testimonials/{testimonialId} {
+      allow read: if resource.data.isVisible == true; // Public can read visible testimonials
+      allow read, write: if request.auth != null; // Admin can read/write all
+    }
+    
+    // Chat sessions collection - for analytics
+    match /chat_sessions/{sessionId} {
+      allow create: if true; // Allow creating chat sessions
+      allow read, write: if request.auth != null; // Admin can read/write all
+    }
+    
+    // Website analytics collection
+    match /analytics/{analyticsId} {
+      allow create: if true; // Allow creating analytics events
+      allow read, write: if request.auth != null; // Admin can read/write all
+    }
+    
+    // Admin users collection
+    match /admin_users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Default rule for other collections - admin only
     match /{document=**} {
       allow read, write: if request.auth != null;
     }

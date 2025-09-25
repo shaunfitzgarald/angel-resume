@@ -1,13 +1,45 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Paper, IconButton, Typography, TextField, Button, Stack, Avatar, CircularProgress, Tooltip } from '@mui/material';
+import { Box, Paper, IconButton, Typography, TextField, Button, Stack, Avatar, Tooltip } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendChat } from '../services/aiService';
+import { trackChatEvent, trackChatSession } from '../utils/analytics';
 
 const CONSENT_STORAGE_KEY = 'cookieConsent.v1';
 function readConsent() {
   try { const raw = localStorage.getItem(CONSENT_STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
 }
+
+// Typing indicator component
+const TypingIndicator = () => (
+  <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 1 }}>
+    <Typography variant="caption" color="text.secondary">AI is typing</Typography>
+    <Box sx={{ display: 'flex', gap: 0.5 }}>
+      {[0, 1, 2].map((i) => (
+        <Box
+          key={i}
+          sx={{
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            backgroundColor: 'primary.main',
+            animation: `typing 1.4s infinite ease-in-out ${i * 0.2}s`,
+            '@keyframes typing': {
+              '0%, 60%, 100%': {
+                transform: 'translateY(0)',
+                opacity: 0.4,
+              },
+              '30%': {
+                transform: 'translateY(-10px)',
+                opacity: 1,
+              },
+            },
+          }}
+        />
+      ))}
+    </Box>
+  </Stack>
+);
 
 function Message({ role, content }) {
   const isUser = role === 'user';
@@ -27,13 +59,37 @@ export default function ChatWidget({ embedded = false }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hi! I'm Shaun's AI assistant. Ask me about pricing, services, or Shaun's background and work." },
+    { role: 'assistant', content: "✨ Hi! I'm Shaun's AI assistant. Ask me about pricing, services, or Shaun's background and work." },
   ]);
   const [consent, setConsent] = useState(() => readConsent());
+  const [sessionId] = useState(() => `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [sessionStartTime] = useState(() => Date.now());
   const listRef = useRef(null);
 
   useEffect(() => { if (open && listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight; }, [open, messages]);
   useEffect(() => { const onUpdate = (e) => setConsent(e.detail); window.addEventListener('cookie-consent-updated', onUpdate); return () => window.removeEventListener('cookie-consent-updated', onUpdate); }, []);
+
+  // Track chat session when widget opens
+  useEffect(() => {
+    if (open) {
+      trackChatEvent('chat_opened', { sessionId });
+    }
+  }, [open, sessionId]);
+
+  // Track session end when component unmounts or chat closes
+  useEffect(() => {
+    return () => {
+      if (open && messages.length > 1) {
+        const sessionDuration = Date.now() - sessionStartTime;
+        trackChatSession({
+          sessionId,
+          messageCount: messages.length,
+          duration: sessionDuration,
+          endedAt: new Date().toISOString()
+        });
+      }
+    };
+  }, [open, messages.length, sessionId, sessionStartTime]);
 
   const disabled = consent?.level === 'necessary';
 
@@ -47,15 +103,41 @@ export default function ChatWidget({ embedded = false }) {
     setInput('');
     const next = [...messages, { role: 'user', content: text }];
     setMessages(next);
+    
+    // Track user message
+    trackChatEvent('user_message', { 
+      sessionId, 
+      messageText: text, 
+      messageCount: next.length 
+    });
+    
     try { window.dispatchEvent(new CustomEvent('chat-sent', { detail: { text } })); } catch {}
     setLoading(true);
     try {
       const reply = await sendChat(next);
       setMessages((prev) => [...prev, { role: 'assistant', content: reply || ' ' }]);
+      
+      // Track assistant response
+      trackChatEvent('assistant_response', { 
+        sessionId, 
+        responseText: reply, 
+        messageCount: next.length + 1,
+        success: true
+      });
+      
       try { window.dispatchEvent(new CustomEvent('chat-response', { detail: { ok: true } })); } catch {}
     } catch (e) {
       console.error(e);
       setMessages((prev) => [...prev, { role: 'assistant', content: 'Sorry, there was an error reaching the assistant.' }]);
+      
+      // Track error
+      trackChatEvent('assistant_error', { 
+        sessionId, 
+        error: e.message,
+        messageCount: next.length + 1,
+        success: false
+      });
+      
       try { window.dispatchEvent(new CustomEvent('chat-response', { detail: { ok: false } })); } catch {}
     } finally {
       setLoading(false);
@@ -65,7 +147,7 @@ export default function ChatWidget({ embedded = false }) {
   const container = (
     <Paper elevation={10} sx={{ width: { xs: '100%', sm: 360 }, height: { xs: '60vh', sm: 480 }, display: 'flex', flexDirection: 'column', borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
       <Box sx={{ p: 1.25, bgcolor: 'primary.main', color: 'primary.contrastText', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="subtitle1">Ask Shaun AI</Typography>
+        <Typography variant="subtitle1">✨ Ask Shaun AI</Typography>
         {!embedded && (
           <IconButton size="small" onClick={() => setOpen(false)} sx={{ color: 'primary.contrastText' }} aria-label="Close chat">
             <CloseIcon fontSize="small" />
@@ -75,7 +157,12 @@ export default function ChatWidget({ embedded = false }) {
       <Box ref={listRef} sx={{ flex: 1, p: 1.25, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1.25 }}>
         {messages.map((m, i) => (<Message key={i} role={m.role} content={m.content} />))}
         {loading && (
-          <Stack direction="row" spacing={1} alignItems="center"><CircularProgress size={18} /><Typography variant="caption">Thinking…</Typography></Stack>
+          <Stack direction="row" spacing={1.5} alignItems="flex-start">
+            <Avatar sx={{ width: 28, height: 28 }}>AI</Avatar>
+            <Paper variant="outlined" sx={{ p: 1.25, bgcolor: 'background.paper', borderColor: 'divider' }}>
+              <TypingIndicator />
+            </Paper>
+          </Stack>
         )}
       </Box>
       <Box sx={{ p: 1.25, borderTop: '1px solid', borderColor: 'divider' }}>
