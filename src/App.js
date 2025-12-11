@@ -47,7 +47,7 @@ import Contact from './sections/Contact';
 import Education from './sections/Education';
 import Footer from './sections/Footer';
 import Pricing from './sections/Pricing';
-import Testimonials from './sections/Testimonials';
+// import Testimonials from './sections/Testimonials';
 
 // Import pages
 import Terms from './pages/Terms';
@@ -85,7 +85,7 @@ function getPageTitle(pathname) {
     '/skills': 'Skills - Shaun Fitzgarald',
     '/projects': 'Projects - Shaun Fitzgarald',
     '/pricing': 'Pricing - Shaun Fitzgarald',
-    '/testimonials': 'Testimonials - Shaun Fitzgarald',
+    // '/testimonials': 'Testimonials - Shaun Fitzgarald',
     '/contact': 'Contact - Shaun Fitzgarald',
     '/help': 'Help - Shaun Fitzgarald',
     '/admin/login': 'Admin Login - Shaun Fitzgarald',
@@ -143,7 +143,7 @@ function App() {
     // { text: 'Education', icon: <SchoolIcon />, path: '/education' },
     { text: 'Projects', icon: <DataObjectIcon />, path: '/projects' },
     { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
-    { text: 'Testimonials', icon: <RateReviewIcon />, path: '/testimonials' },
+    // { text: 'Testimonials', icon: <RateReviewIcon />, path: '/testimonials' },
     { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
     { text: 'Help', icon: <HelpOutlineIcon />, path: '/help' },
   ];
@@ -199,7 +199,12 @@ function App() {
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          minHeight: '100vh',
+          background: 'radial-gradient(circle at 50% 0%, #1a2035 0%, #0B0F19 100%)',
+        }}>
           <CssBaseline />
           <ScrollToTop />
 
@@ -286,7 +291,7 @@ function App() {
               {/* <Route path="/education" element={<Education />} /> */}
               <Route path="/projects" element={<Projects />} />
               <Route path="/pricing" element={<Pricing />} />
-              <Route path="/testimonials" element={<Testimonials />} />
+              {/* <Route path="/testimonials" element={<Testimonials />} /> */}
               <Route path="/help" element={<Help />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />

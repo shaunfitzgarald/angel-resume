@@ -1,57 +1,68 @@
 import React from 'react';
-import { Box, Container, Typography, Link, Stack } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Container, Typography, IconButton, Stack, Link } from '@mui/material';
+import { GitHub, LinkedIn, Twitter, Email } from '@mui/icons-material';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
+  const socialLinks = [
+    { icon: <GitHub />, url: 'https://github.com/shaunfitzgarald', label: 'GitHub' },
+    { icon: <LinkedIn />, url: 'https://linkedin.com/in/shaunfitzgarald', label: 'LinkedIn' },
+    { icon: <Twitter />, url: 'https://twitter.com/shaunfitzgarald', label: 'Twitter' },
+    { icon: <Email />, url: 'mailto:shaun@shaunfitzgarald.com', label: 'Email' },
+  ];
+
   return (
     <Box
       component="footer"
       sx={{
-        py: 3,
-        px: 2,
+        py: 6,
         mt: 'auto',
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[200]
-            : theme.palette.grey[800],
+        background: 'rgba(11, 15, 25, 0.8)',
+        backdropFilter: 'blur(20px)',
+        borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+        position: 'relative',
+        zIndex: 10,
       }}
     >
-      <Container maxWidth="sm">
-        <Typography variant="body2" color="text.secondary" align="center">
-          {'© '}
-          {new Date().getFullYear()}
-          {' shaunfitzgarald.com'}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" align="center" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 1 }}>
-          Made with <FavoriteIcon sx={{ color: 'red', fontSize: '1rem' }} /> by
-          <Link color="inherit" href="https://github.com/shaunfitzgarald">
-            shaunfitzgarald
-          </Link>
-        </Typography>
-        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
-          <Link component={RouterLink} to="/terms" color="text.secondary" underline="hover" variant="body2">
-            Terms of Service
-          </Link>
-          <Link component={RouterLink} to="/privacy" color="text.secondary" underline="hover" variant="body2">
-            Privacy Policy
-          </Link>
-          <Link component={RouterLink} to="/admin/login" color="text.secondary" underline="hover" variant="body2">
-            Admin
-          </Link>
-          <Link
-            component="button"
-            onClick={() => window.dispatchEvent(new Event('cookie-consent-open'))}
-            color="text.secondary"
-            underline="hover"
-            variant="body2"
-            sx={{ cursor: 'pointer' }}
-          >
-            Cookie Settings
-          </Link>
+      <Container maxWidth="lg">
+        <Stack spacing={4} alignItems="center">
+          <Stack direction="row" spacing={2}>
+            {socialLinks.map((link) => (
+              <IconButton
+                key={link.label}
+                component={Link}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                sx={{
+                  color: 'text.secondary',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    color: 'primary.main',
+                    transform: 'translateY(-3px)',
+                    background: 'rgba(123, 97, 255, 0.1)',
+                  },
+                }}
+              >
+                {link.icon}
+              </IconButton>
+            ))}
+          </Stack>
+
+          <Box textAlign="center">
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Designed & Built by Shaun Fitzgarald
+            </Typography>
+            <Typography variant="caption" color="text.disabled">
+              © {currentYear} All Rights Reserved
+            </Typography>
+          </Box>
         </Stack>
       </Container>
     </Box>
   );
 };
+
 export default Footer;
