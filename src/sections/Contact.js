@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
@@ -186,7 +187,16 @@ const Contact = () => {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <>
+      <Helmet>
+        <title>Contact | Hire a Full Stack Developer – Shaun Fitzgarald</title>
+        <meta
+          name="description"
+          content="Get in touch with Shaun Fitzgarald for custom web development projects, creative problem solving, and professional development services."
+        />
+        <link rel="canonical" href="https://shaunfitzgarald.com/contact" />
+      </Helmet>
+      <Container maxWidth="lg" sx={{ py: 6 }}>
       <Box textAlign="center" mb={6}>
         <Typography variant="h3" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
           Get In Touch
@@ -398,6 +408,7 @@ const Contact = () => {
         </Alert>
       </Snackbar>
     </Container>
+    </>
   );
 };
 

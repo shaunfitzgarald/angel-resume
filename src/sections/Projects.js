@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, Grid, Card, CardContent, CardMedia, CardActions, Button, Chip, Zoom, Fade } from '@mui/material';
+import { Helmet } from 'react-helmet-async';
+import { Box, Typography, Container, Grid, Card, CardContent, CardMedia, CardActions, Button, Chip, Zoom } from '@mui/material';
 import { GitHub as GitHubIcon, Launch as LaunchIcon } from '@mui/icons-material';
 
 // Import project images
@@ -8,7 +9,6 @@ import crookedCredenzaImg from '../assets/crooked-credenza.gif';
 import sdPrideNetworkImg from '../assets/san-diego-pride-network.gif';
 import sdStartupMapImg from '../assets/SDStartUpMap.png';
 import chicklechatImg from '../assets/chickle-chat.gif';
-import shaunImg from '../assets/shaun.png';
 import kelseySinclairImg from '../assets/kelseysinclaire.gif';
 import eventsAppScreenshot from '../assets/events-app-screenshot.png'
 
@@ -197,7 +197,16 @@ const ProjectCard = ({ project, index }) => {
 
 const Projects = () => {
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <>
+      <Helmet>
+        <title>Portfolio Projects | Full Stack Web Apps – Shaun Fitzgarald</title>
+        <meta
+          name="description"
+          content="A showcase of web applications and projects built by Shaun Fitzgarald, featuring React, Firebase, AI integrations, and custom CRM solutions."
+        />
+        <link rel="canonical" href="https://shaunfitzgarald.com/projects" />
+      </Helmet>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box textAlign="center" mb={6}>
         <Typography variant="h3" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
           My Projects
@@ -238,6 +247,7 @@ const Projects = () => {
         </Button>
       </Box>
     </Container>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Box, Typography, Container, Grid, Paper, Button, useTheme, useMediaQuery, keyframes } from '@mui/material';
 import { 
   Person as PersonIcon,
@@ -56,6 +57,91 @@ const About = () => {
   }, [controls, inView]);
 
   return (
+    <>
+  <Helmet>
+    <title>San Diego Full Stack Developer | Custom Web Apps – Shaun Fitzgarald</title>
+    <meta
+      name="description"
+      content="San Diego full stack developer specializing in custom web applications, modern websites, and scalable digital solutions using React, Node, and TypeScript."
+    />
+    <link rel="canonical" href="https://shaunfitzgarald.com/" />
+    <script type="application/ld+json">
+      {`
+        {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Shaun Fitzgarald",
+          "jobTitle": "Full Stack Developer",
+          "url": "https://shaunfitzgarald.com",
+          "sameAs": [
+            "https://github.com/shaunfitzgarald",
+            "https://linkedin.com/in/shaunfitzgarald"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "San Diego",
+            "addressRegion": "CA",
+            "postalCode": "92103",
+            "addressCountry": "US"
+          }
+        }
+      `}
+    </script>
+    <script type="application/ld+json">
+      {`
+        {
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": "Shaun Fitzgarald Web Development",
+          "image": "https://shaunfitzgarald.com/static/media/shaunfitzgarald.png",
+          "@id": "https://shaunfitzgarald.com",
+          "url": "https://shaunfitzgarald.com",
+          "telephone": "+18587699688",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Hillcrest Area",
+            "addressLocality": "San Diego",
+            "addressRegion": "CA",
+            "postalCode": "92103",
+            "addressCountry": "US"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 32.7473,
+            "longitude": -117.1647
+          },
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "opens": "09:00",
+            "closes": "18:00"
+          }
+        }
+      `}
+    </script>
+    <script type="application/ld+json">
+      {`
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Shaun Fitzgarald Portfolio",
+          "url": "https://shaunfitzgarald.com/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://shaunfitzgarald.com/projects?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      `}
+    </script>
+  </Helmet>
+
     <Box 
       component={motion.div}
       ref={ref}
@@ -133,6 +219,18 @@ const About = () => {
           <Grid item xs={12} md={8}>
             <motion.div variants={item}>
               <Typography 
+                variant="body1" 
+                gutterBottom
+                sx={{ 
+                  fontWeight: 500,
+                  mb: 1,
+                  fontSize: '1.2rem',
+                  color: 'text.secondary'
+                }}
+              >
+                Hey there! 👋
+              </Typography>
+              <Typography 
                 variant="h2" 
                 component="h1" 
                 gutterBottom
@@ -161,7 +259,7 @@ const About = () => {
                   }
                 }}
               >
-                Hey there! 👋
+                San Diego Full Stack Developer Building Custom Web Apps
               </Typography>
             </motion.div>
 
@@ -179,7 +277,7 @@ const About = () => {
                   px: 2
                 }}
               >
-                I'm Shaun, a Full Stack Developer & Creative Problem Solver
+                React, Node, TypeScript. Fast builds, clean UX, scalable systems.
               </Typography>
             </motion.div>
 
@@ -420,6 +518,7 @@ const About = () => {
       </Box>
     </Container>
     </Box>
+    </>
   );
 };
 

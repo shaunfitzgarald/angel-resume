@@ -35,6 +35,7 @@ import DataObjectIcon from '@mui/icons-material/DataObject';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
 import { trackPageView } from './utils/analytics';
+import { HelmetProvider } from 'react-helmet-async';
 
 
 // Import sections
@@ -197,132 +198,134 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
+    <HelmetProvider>
       <ThemeProvider theme={theme}>
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          minHeight: '100vh',
-          background: 'radial-gradient(circle at 50% 0%, #1a2035 0%, #0B0F19 100%)',
-        }}>
-          <CssBaseline />
-          <ScrollToTop />
+        <AuthProvider>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            minHeight: '100vh',
+            background: 'radial-gradient(circle at 50% 0%, #1a2035 0%, #0B0F19 100%)',
+          }}>
+            <CssBaseline />
+            <ScrollToTop />
 
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-          }}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Box
-              component="img"
-              src={logoImage}
-              alt="Shaun Fitzgarald"
+          <AppBar
+            position="fixed"
+            sx={{
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+              ml: { sm: `${drawerWidth}px` },
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+            }}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { sm: 'none' } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Box
+                component="img"
+                src={logoImage}
+                alt="Shaun Fitzgarald"
+                sx={{
+                  height: { xs: 60, sm: 80, md: 100 },
+                  maxWidth: '90%',
+                  mr: 2,
+                  display: 'flex',
+                  filter: theme => theme.palette.mode === 'dark' ? 'brightness(1.2)' : 'none',
+                  transition: 'all 0.3s ease'
+                }}
+              />
+            </Toolbar>
+          </AppBar>
+
+          <Box
+            component="nav"
+            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          >
+            <Drawer
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{ keepMounted: true }}
               sx={{
-                height: { xs: 60, sm: 80, md: 100 },
-                maxWidth: '90%',
-                mr: 2,
-                display: 'flex',
-                filter: theme => theme.palette.mode === 'dark' ? 'brightness(1.2)' : 'none',
-                transition: 'all 0.3s ease'
+                display: { xs: 'block', sm: 'none' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
               }}
-            />
-          </Toolbar>
-        </AppBar>
+            >
+              {drawerContent}
+            </Drawer>
+            <Drawer
+              variant="permanent"
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              }}
+              open
+            >
+              {drawerContent}
+            </Drawer>
+          </Box>
 
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        >
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{ keepMounted: true }}
+          <Box
+            component="main"
             sx={{
-              display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              flexGrow: 1,
+              p: 3,
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+              ml: { sm: `${drawerWidth}px` },
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            {drawerContent}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-            open
-          >
-            {drawerContent}
-          </Drawer>
-        </Box>
+            <Toolbar id="back-to-top-anchor" />
+            <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
+              <Routes>
+                {/* <Route path="/" element={<Home />} /> */}
+                <Route path="/" element={<About />} />
+                <Route path="/experience" element={<Experience />} />
+                <Route path="/skills" element={<Skills />} />
+                {/* <Route path="/education" element={<Education />} /> */}
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/pricing" element={<Pricing />} />
+                {/* <Route path="/testimonials" element={<Testimonials />} /> */}
+                <Route path="/help" element={<Help />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin" element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </Container>
+            <Footer />
+          </Box>
 
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Toolbar id="back-to-top-anchor" />
-          <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
-            <Routes>
-              {/* <Route path="/" element={<Home />} /> */}
-              <Route path="/" element={<About />} />
-              <Route path="/experience" element={<Experience />} />
-              <Route path="/skills" element={<Skills />} />
-              {/* <Route path="/education" element={<Education />} /> */}
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/pricing" element={<Pricing />} />
-              {/* <Route path="/testimonials" element={<Testimonials />} /> */}
-              <Route path="/help" element={<Help />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              
-              {/* Admin Routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </Container>
-          <Footer />
-        </Box>
-
-        <ScrollTop>
-          <IconButton
-            color="primary"
-            aria-label="scroll back to top"
-            sx={{ backgroundColor: 'background.paper', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            <KeyboardArrowUpIcon />
-          </IconButton>
-        </ScrollTop>
-        </Box>
-        <CookieConsent />
-        <ChatWidget />
+          <ScrollTop>
+            <IconButton
+              color="primary"
+              aria-label="scroll back to top"
+              sx={{ backgroundColor: 'background.paper', '&:hover': { backgroundColor: 'primary.light' } }}
+            >
+              <KeyboardArrowUpIcon />
+            </IconButton>
+          </ScrollTop>
+          </Box>
+          <CookieConsent />
+          <ChatWidget />
+        </AuthProvider>
       </ThemeProvider>
-    </AuthProvider>
+    </HelmetProvider>
   );
 }
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -37,7 +38,12 @@ const AdminLogin = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <>
+      <Helmet>
+        <title>Admin Login – Shaun Fitzgarald</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <Container component="main" maxWidth="xs">
       <Box
         sx={{
           marginTop: 8,
@@ -109,6 +115,7 @@ const AdminLogin = () => {
         </Paper>
       </Box>
     </Container>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Box, Typography, Container, Paper, Chip, useTheme, useMediaQuery, Fade, Grow, Zoom, Button } from '@mui/material';
 import { Work as WorkIcon, School as SchoolIcon, MilitaryTech as MilitaryIcon, LocationOn as LocationIcon, Star as StarIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineOppositeContent, TimelineDot } from '@mui/lab';
@@ -207,7 +208,16 @@ const Experience = () => {
   };
 
   return (
-    <Box id="experience" sx={{ py: 8, bgcolor: 'background.paper' }}>
+    <>
+      <Helmet>
+        <title>Experience | Software Development & Freelance – Shaun Fitzgarald</title>
+        <meta
+          name="description"
+          content="Explore Shaun Fitzgarald's professional experience in freelance web development, internships, and education in Computer Science."
+        />
+        <link rel="canonical" href="https://shaunfitzgarald.com/experience" />
+      </Helmet>
+      <Box id="experience" sx={{ py: 8, bgcolor: 'background.paper' }}>
       <Container maxWidth="lg">
         <Zoom in={isVisible}>
           <Typography 
@@ -520,6 +530,7 @@ const Experience = () => {
         </Box>
       </Container>
     </Box>
+    </>
   );
 };
 
