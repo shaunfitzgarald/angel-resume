@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Container, Typography, Grid, Card, CardContent, LinearProgress, Stack, Chip } from '@mui/material';
+import { Helmet } from 'react-helmet-async';
+import { Box, Container, Typography, Grid, Card, CardContent, LinearProgress, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import CodeIcon from '@mui/icons-material/Code';
 import StorageIcon from '@mui/icons-material/Storage';
@@ -79,7 +80,16 @@ const Skills = () => {
   const theme = useTheme();
 
   return (
-    <Box id="skills" sx={{ py: 12, position: 'relative' }}>
+    <>
+      <Helmet>
+        <title>Skills & Technologies | React, Firebase, AI – Shaun Fitzgarald</title>
+        <meta
+          name="description"
+          content="A comprehensive look at Shaun Fitzgarald's technical skills including React, Node.js, Firebase, AI integrations, and professional project management."
+        />
+        <link rel="canonical" href="https://shaunfitzgarald.com/skills" />
+      </Helmet>
+      <Box id="skills" sx={{ py: 12, position: 'relative' }}>
       <Container maxWidth="lg">
         <Box sx={{ mb: 8, textAlign: 'center' }}>
           <Typography variant="h2" component="h2" gutterBottom sx={{ 
@@ -142,6 +152,7 @@ const Skills = () => {
         </Grid>
       </Container>
     </Box>
+    </>
   );
 };
 

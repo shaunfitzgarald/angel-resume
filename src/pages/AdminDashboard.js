@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -77,7 +78,12 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <>
+      <Helmet>
+        <title>Admin Dashboard – Shaun Fitzgarald</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="primary">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -119,6 +125,7 @@ const AdminDashboard = () => {
         </Paper>
       </Container>
     </Box>
+    </>
   );
 };
 

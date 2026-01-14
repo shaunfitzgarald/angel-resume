@@ -3,6 +3,7 @@ import { Box, Typography, Button, useTheme, useMediaQuery, keyframes } from '@mu
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
+
 // Animation variants
 const container = {
   hidden: { opacity: 0 },

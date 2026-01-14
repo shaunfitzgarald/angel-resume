@@ -1,10 +1,17 @@
 import React from 'react';
-import { Container, Typography, Box, Paper, Breadcrumbs, Link } from '@mui/material';
+import { Helmet } from 'react-helmet-async';
+import { Container, Typography, Paper, Breadcrumbs, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 const Terms = () => {
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <>
+      <Helmet>
+        <title>Terms of Service – Shaun Fitzgarald</title>
+        <meta name="description" content="Read the terms of service for using shaunfitzgarald.com and my professional web development services." />
+        <link rel="canonical" href="https://shaunfitzgarald.com/terms" />
+      </Helmet>
+      <Container maxWidth="md" sx={{ py: 4 }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
         <Link component={RouterLink} to="/" underline="hover" color="inherit">
           Home
@@ -64,6 +71,7 @@ const Terms = () => {
         </Typography>
       </Paper>
     </Container>
+    </>
   );
 };
 

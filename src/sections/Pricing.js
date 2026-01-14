@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   Box,
   Container,
@@ -151,10 +152,6 @@ function PricingCard({ pkg }) {
 }
 
 export default function Pricing() {
-  useEffect(() => {
-    document.title = 'Pricing | Shaun Fitzgarald';
-  }, []);
-
   const [hoveredCol, setHoveredCol] = useState(null);
   const colHoverSx = (key) => (theme) => ({
     backgroundColor:
@@ -167,7 +164,16 @@ export default function Pricing() {
   });
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <>
+      <Helmet>
+        <title>Pricing & Packages | Web Development Services – Shaun Fitzgarald</title>
+        <meta
+          name="description"
+          content="Transparent pricing for custom web development, including starter, business, and advanced packages tailored to your project needs."
+        />
+        <link rel="canonical" href="https://shaunfitzgarald.com/pricing" />
+      </Helmet>
+      <Container maxWidth="lg" sx={{ py: 6 }}>
       <Box textAlign="center" mb={6}>
         <Typography variant="h3" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
           Pricing
@@ -581,5 +587,6 @@ export default function Pricing() {
         </Button>
       </Box>
     </Container>
+    </>
   );
 }
