@@ -5,16 +5,13 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
   Box, 
   Typography, 
-  Container, 
   Grid, 
   TextField, 
   Button, 
-  Paper, 
   Divider, 
   IconButton,
   Snackbar,
   Alert,
-  Zoom,
   Fade
 } from '@mui/material';
 import { 
@@ -26,6 +23,8 @@ import {
   Twitter as TwitterIcon,
   Send as SendIcon
 } from '@mui/icons-material';
+import { BentoGrid } from '../components/BentoGrid';
+import { BentoCard } from '../components/BentoCard';
 
 const Contact = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -196,32 +195,31 @@ const Contact = () => {
         />
         <link rel="canonical" href="https://shaunfitzgarald.com/contact" />
       </Helmet>
-      <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Box textAlign="center" mb={6}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
-          Get In Touch
+      <Box id="contact" sx={{ width: '100%', pt: 4, pb: 12 }}>
+      <Box textAlign="center" mb={8}>
+        <Typography 
+          variant="h2" 
+          component="h1" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: 800,
+            fontSize: { xs: '2.5rem', sm: '3.5rem' },
+            color: 'white'
+          }}
+        >
+          Get In <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7B61FF] to-[#00E5FF]">Touch</span>
         </Typography>
-        <Typography variant="h6" color="textSecondary" maxWidth="700px" mx="auto">
+        <Typography variant="h6" sx={{ color: 'text.secondary', maxWidth: 700, mx: 'auto' }}>
           Have a question or want to work together? Feel free to reach out to me!
         </Typography>
       </Box>
 
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={5}>
-          <Zoom in={isVisible} style={{ transitionDelay: '100ms' }}>
-            <Paper elevation={3} sx={{ 
-              p: 4, 
-              height: '100%', 
-              borderRadius: 2,
-              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-              '&:hover': {
-                transform: 'translateY(-5px)',
-                boxShadow: (theme) => theme.shadows[10]
-              }
-            }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3, fontWeight: 600, color: 'primary.main' }}>
-              Contact Information
-            </Typography>
+      <BentoGrid>
+        {/* Contact Info Card */}
+        <BentoCard className="md:col-span-1 lg:col-span-1 xl:col-span-1 row-span-2 flex flex-col h-full" delay={0.1}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 700, color: 'white' }}>
+            Contact Information
+          </Typography>
             
             {contactMethods.map((method, index) => (
               <Fade in={isVisible} style={{ transitionDelay: `${200 + index * 100}ms` }} key={index}>
@@ -237,7 +235,7 @@ const Contact = () => {
                   {method.icon}
                 </Box>
                 <Box>
-                  <Typography variant="subtitle1" fontWeight={600}>
+                  <Typography variant="subtitle1" fontWeight={700} sx={{ color: 'white' }}>
                     {method.title}
                   </Typography>
                   <Typography 
@@ -246,10 +244,11 @@ const Contact = () => {
                     target="_blank" 
                     rel="noopener noreferrer"
                     sx={{
-                      color: 'text.primary',
+                      color: 'text.secondary',
                       textDecoration: 'none',
+                      wordBreak: 'break-all',
                       '&:hover': {
-                        color: 'primary.main',
+                        color: 'white',
                         textDecoration: 'underline'
                       }
                     }}
@@ -267,7 +266,7 @@ const Contact = () => {
               Connect With Me
             </Typography>
             
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2, mt: 'auto' }}>
               {socialLinks.map((social, index) => (
                 <IconButton
                   key={index}
@@ -276,13 +275,12 @@ const Contact = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{
-                    color: social.color,
-                    backgroundColor: 'background.paper',
-                    border: '1px solid',
-                    borderColor: 'divider',
+                    color: 'white',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
                     '&:hover': {
-                      backgroundColor: 'action.hover',
-                      transform: 'translateY(-2px)'
+                      background: social.color,
+                      transform: 'translateY(-4px)'
                     },
                     transition: 'all 0.3s ease',
                     width: 48,
@@ -293,31 +291,19 @@ const Contact = () => {
                 </IconButton>
               ))}
             </Box>
-          </Paper>
-          </Zoom>
-        </Grid>
+        </BentoCard>
 
-        <Grid item xs={12} md={7}>
-          <Zoom in={isVisible} style={{ transitionDelay: '300ms' }}>
-            <Paper elevation={3} sx={{ 
-              p: 4, 
-              borderRadius: 2,
-              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-              '&:hover': {
-                transform: 'translateY(-5px)',
-                boxShadow: (theme) => theme.shadows[10]
-              }
-            }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3, fontWeight: 600, color: 'primary.main' }}>
+        {/* Contact Form Card */}
+        <BentoCard className="md:col-span-2 lg:col-span-2 xl:col-span-3 row-span-2 flex flex-col h-full" delay={0.2}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 2, fontWeight: 700, color: 'white' }}>
               Send Me a Message
             </Typography>
-            <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
+            <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3 }}>
               Interested in my experience or have a question? I'll get back to you as soon as possible.
             </Typography>
-            <form ref={form} onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid container item spacing={3}>
-                <Grid item xs={12} md={4}>
+            <form ref={form} onSubmit={handleSubmit} style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
                     label="Your Name"
@@ -326,10 +312,9 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     variant="outlined"
-                    margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
                     label="Your Email"
@@ -339,10 +324,9 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     variant="outlined"
-                    margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Subject"
@@ -351,51 +335,57 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     variant="outlined"
-                    margin="normal"
                   />
                 </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Your Message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  multiline
-                  rows={6}
-                  variant="outlined"
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  endIcon={<SendIcon />}
-                  disabled={loading}
-                  sx={{
-                    mt: 1,
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    fontSize: '1rem',
-                    fontWeight: 600
-                  }}
-                >
-                  {loading ? 'Sending...' : 'Send Message'}
-                </Button>
-              </Grid>
+                <Grid item xs={12} sx={{ flexGrow: 1 }}>
+                  <TextField
+                    fullWidth
+                    label="Your Message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    multiline
+                    rows={6}
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                      },
+                      '& .MuiInputLabel-root': { color: 'text.secondary' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    endIcon={<SendIcon />}
+                    disabled={loading}
+                    sx={{
+                      mt: 1,
+                      background: 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)',
+                      color: '#fff',
+                      borderRadius: '50px',
+                      px: 4,
+                      py: 1.5,
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                      boxShadow: '0 4px 14px rgba(123, 97, 255, 0.4)',
+                    }}
+                  >
+                    {loading ? 'Sending...' : 'Start a Project'}
+                  </Button>
+                </Grid>
             </Grid>
             </form>
-          </Paper>
-          </Zoom>
-        </Grid>
-      </Grid>
+        </BentoCard>
+      </BentoGrid>
 
       <Snackbar
         open={openSnackbar}
@@ -407,7 +397,7 @@ const Contact = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Container>
+    </Box>
     </>
   );
 };

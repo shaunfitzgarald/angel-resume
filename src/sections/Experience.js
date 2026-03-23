@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Box, Typography, Container, Paper, Chip, useTheme, useMediaQuery, Fade, Grow, Zoom, Button } from '@mui/material';
-import { Work as WorkIcon, School as SchoolIcon, MilitaryTech as MilitaryIcon, LocationOn as LocationIcon, Star as StarIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineOppositeContent, TimelineDot } from '@mui/lab';
+import { Box, Typography, Chip, Fade, Zoom, Button } from '@mui/material';
+import { Work as WorkIcon, School as SchoolIcon, LocationOn as LocationIcon, Download as DownloadIcon } from '@mui/icons-material';
+import { BentoGrid } from '../components/BentoGrid';
+import { BentoCard } from '../components/BentoCard';
 
 const experiences = [
   {
@@ -12,9 +13,9 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'Jan 2024 – Present',
     description: [
-      'Delivered modern, responsive React applications for multiple clients with a focus on user experience and clean design',
-      'Managed four client projects simultaneously while attending school full-time, demonstrating excellent time management',
-      'Communicated technical requirements and translated vague ideas into functional applications'
+      'Built high-performance React architectures for diverse client portfolios.',
+      'Juggled 4 simultaneous projects while managing full-time academics.',
+      'Translated vague client ideas into precise, scalable digital products.'
     ],
     skills: ['React', 'Web Development', 'Client Communication', 'Project Management'],
     type: 'work',
@@ -27,10 +28,9 @@ const experiences = [
     location: 'Remote',
     duration: 'Nov 2023 – Feb 2024',
     description: [
-      'Upgraded a deprecated website to the latest version of Ruby on Rails, improving performance and security',
-      'Participated in daily standups and Agile workflow, consistently meeting sprint goals and deadlines',
-      'Recognized for squashing the most bugs on the team, demonstrating strong problem-solving skills',
-      'Communicated effectively with clients to gather requirements and provide progress updates'
+      'Engineered the migration of a deprecated legacy codebase to modern Ruby on Rails.',
+      'Led the team in bug resolution, rapidly stabilizing the core platform.',
+      'Drove Agile workflows and maintained strict adherence to release sprints.'
     ],
     skills: ['Ruby on Rails', 'Agile', 'Bug Fixing', 'Client Communication', 'Team Collaboration'],
     type: 'work',
@@ -43,10 +43,9 @@ const experiences = [
     location: 'San Diego, CA',
     duration: '2021 – 2023',
     description: [
-      'Provided prompt, courteous service in fast-paced settings, handling high guest volumes efficiently',
-      'Managed point-of-sale systems, cash handling, and inventory support',
-      'Recognized for reliability, punctuality, and ability to multitask under pressure',
-      'Trained and supported new staff to ensure smooth team operations'
+      'Operated flawlessly under high-pressure, fast-paced environments.',
+      'Mastered POS integration, inventory logistics, and cash management.',
+      'Spearheaded onboarding and trained incoming staff on operational standards.'
     ],
     skills: ['Customer Service', 'POS Systems', 'Inventory Management', 'Training'],
     type: 'work',
@@ -59,9 +58,9 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'May 2018 – May 2019',
     description: [
-      'Processed 650+ daily shipments with 99% accuracy in a high-volume logistics environment',
-      'Resolved over 250 order issues, contributing to a 95% team resolution rate',
-      'Maintained clean, efficient workstations while adhering to FDA-compliant protocols'
+      'Orchestrated logistics for 650+ daily shipments, maintaining a 99% accuracy rate.',
+      'Troubleshot and resolved 250+ critical order bottlenecks.',
+      'Enforced strict FDA-compliant operational and hygiene protocols.'
     ],
     skills: ['Logistics', 'Order Processing', 'Problem Solving', 'Compliance'],
     type: 'work',
@@ -74,9 +73,9 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'Apr 2018 – Jan 2020',
     description: [
-      'Managed complex scheduling, travel, and administrative tasks for a C-level executive',
-      'Maintained confidentiality and proactively solved logistical challenges across multiple time zones',
-      'Delivered work consistently on deadline with strong attention to detail'
+      'Streamlined operations and global travel logistics for C-suite executive.',
+      'Handled highly confidential operations across shifting international time zones.',
+      'Optimized administrative workflows for maximum daily efficiency.'
     ],
     skills: ['Executive Support', 'Scheduling', 'Problem Solving', 'Confidentiality'],
     type: 'work',
@@ -89,9 +88,9 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'Jun 2013 – Jan 2018',
     description: [
-      'Onboarded and trained new employees on company standards and customer service practices',
-      'Maintained store appearance and ensured a consistent brand image',
-      'Handled customer concerns with empathy and professionalism'
+      'Executed robust onboarding programs for incoming retail associates.',
+      'Maintained visual and operational excellence across the storefront.',
+      'Resolved high-friction customer interactions with strategic empathy.'
     ],
     skills: ['Training', 'Customer Service', 'Brand Management', 'Retail Operations'],
     type: 'work',
@@ -104,9 +103,8 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'In Progress - Expected Jan 2025',
     description: [
-      'Pursuing Computer Science degree with focus on software development',
-      'Maintaining strong academic performance while working as freelance developer',
-      'Applying classroom concepts to real-world client projects'
+      'Focusing aggressively on scalable software architecture and advanced algorithms.',
+      'Applying core classroom theory directly to complex freelance deployments.'
     ],
     skills: ['Computer Science', 'Software Development', 'Problem Solving', 'Time Management'],
     type: 'education',
@@ -119,9 +117,9 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'Jan 2024',
     description: [
-      'Completed intensive training in full-stack web development',
-      'Built multiple projects using React, JavaScript, HTML, and CSS',
-      'Collaborated with peers on group projects simulating real-world development environments'
+      'Engineered full-stack applications through intensive 500+ hour curriculum.',
+      'Mastered React, modern UI frameworks, and robust API integrations.',
+      'Led Agile group deployments simulating high-stakes production environments.'
     ],
     skills: ['React', 'JavaScript', 'HTML/CSS', 'Full-Stack Development'],
     type: 'education',
@@ -134,9 +132,8 @@ const experiences = [
     location: 'San Diego, CA',
     duration: 'Sep 2014 – Jun 2018',
     description: [
-      'Completed Bachelor of Science degree with interdisciplinary focus',
-      'Developed strong analytical and research skills',
-      'Balanced academic studies with part-time work'
+      'Cultivated rigorous analytical problem-solving and deep research methodologies.',
+      'Mastered interdisciplinary logic systems across science and international business.'
     ],
     skills: ['Research', 'Analysis', 'Time Management', 'Cross-disciplinary Studies'],
     type: 'education',
@@ -149,9 +146,8 @@ const experiences = [
     location: 'Berlin, Germany',
     duration: 'Aug 2016 – Feb 2017',
     description: [
-      'Completed immersive German language program abroad',
-      'Developed cultural competency and communication skills',
-      'Navigated living and studying in an international environment'
+      'Achieved language fluency and cultural adaptability during intensive overseas study.',
+      'Navigated and localized into full international immersion.'
     ],
     skills: ['German Language', 'Cultural Competency', 'International Experience', 'Adaptability'],
     type: 'education',
@@ -174,38 +170,12 @@ const sortedExperiences = [...experiences].sort((a, b) => {
 });
 
 const Experience = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [isVisible, setIsVisible] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(null);
   
   useEffect(() => {
     // Trigger animations when component mounts
     setIsVisible(true);
   }, []);
-
-  // Custom colors for timeline dots using tech color scheme
-  const workColor = theme.palette.tech?.blue?.main || '#0066FF';
-  const educationColor = theme.palette.tech?.green?.main || '#0ACF83';
-  
-  const getDotColor = (type) => {
-    switch (type) {
-      case 'work':
-        return 'blue'; // Will be used as a key for styling
-      case 'education':
-        return 'green'; // Will be used as a key for styling
-      case 'military':
-        return 'success';
-      default:
-        return 'blue';
-    }
-  };
-  
-  // Custom color mapping for timeline dots
-  const dotColorMap = {
-    blue: workColor,
-    green: educationColor,
-  };
 
   return (
     <>
@@ -217,319 +187,125 @@ const Experience = () => {
         />
         <link rel="canonical" href="https://shaunfitzgarald.com/experience" />
       </Helmet>
-      <Box id="experience" sx={{ py: 8, bgcolor: 'background.paper' }}>
-      <Container maxWidth="lg">
+      
+      <Box id="experience" sx={{ width: '100%', pt: 4, pb: 12 }}>
         <Zoom in={isVisible}>
           <Typography 
-            variant="h3" 
-            component="h2" 
+            variant="h2" 
+            component="h1" 
             align="center" 
             gutterBottom 
             sx={{ 
-              mb: 2,
-              fontWeight: 700,
-              color: 'primary.main',
-              position: 'relative',
-              display: 'inline-block',
-              width: '100%',
-              textAlign: 'center',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                bottom: -10,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: isVisible ? '100px' : '0px',
-                height: '4px',
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                borderRadius: '2px',
-                transition: 'width 0.8s ease-in-out'
-              },
-              fontSize: { xs: '2rem', sm: '2.5rem' }
+              mb: 8,
+              fontWeight: 800,
+              fontSize: { xs: '2.5rem', sm: '3.5rem' },
+              color: 'white'
             }}
           >
-            Experience & Education
+            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7B61FF] to-[#00E5FF]">Experience</span>
           </Typography>
         </Zoom>
         
-        
-        <Timeline position={isMobile ? 'right' : 'alternate'} sx={{ m: 0, p: 0 }}>
+        <BentoGrid>
           {sortedExperiences.map((exp, index) => (
-            <TimelineItem key={exp.id} 
-              onMouseEnter={() => setActiveIndex(index)}
-              onMouseLeave={() => setActiveIndex(null)}
+            <BentoCard 
+              key={exp.id} 
+              delay={0.1 * (index % 5)}
+              className={index === 0 ? "md:col-span-2 row-span-2" : ""}
             >
-              {!isMobile && (
-                <TimelineOppositeContent
+              <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box 
                   sx={{ 
-                    m: 'auto 0', 
-                    flex: 0.2, 
-                    minWidth: 140,
-                    pr: 3,
-                    textAlign: 'right',
-                    display: { xs: 'none', md: 'block' }
-                  }}
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  {exp.duration}
-                </TimelineOppositeContent>
-              )}
-              
-              <TimelineSeparator>
-                <Zoom 
-                  in={isVisible} 
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  <TimelineDot 
-                    sx={{ 
-                      p: 1.5,
-                      bgcolor: dotColorMap[getDotColor(exp.type)],
-                      boxShadow: `0 0 0 3px ${theme.palette.background.paper}`,
-                      transform: activeIndex === index ? 'scale(1.15)' : 'scale(1)',
-                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                      '&:hover': {
-                        transform: 'scale(1.15)',
-                        boxShadow: `0 0 0 4px ${theme.palette.background.paper}, 0 0 0 6px ${dotColorMap[getDotColor(exp.type)]}`,
-                      },
-                      '& .MuiSvgIcon-root': {
-                        color: '#ffffff'
-                      }
-                    }}
-                  >
-                    {exp.icon}
-                  </TimelineDot>
-                </Zoom>
-                <TimelineConnector 
-                  sx={{ 
-                    bgcolor: activeIndex === index ? dotColorMap[getDotColor(exp.type)] : (theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'),
-                    height: '100%',
-                    minHeight: 40,
-                    transition: 'background-color 0.3s ease',
-                    opacity: isVisible ? 1 : 0,
-                    animation: isVisible ? `${index * 100}ms ease-out ${index * 150}ms forwards growConnector` : 'none',
-                    '@keyframes growConnector': {
-                      '0%': {
-                        height: '0%',
-                      },
-                      '100%': {
-                        height: '100%',
-                      },
-                    },
-                  }} 
-                />
-              </TimelineSeparator>
-              
-              <TimelineContent sx={{ py: 0, px: 2, mb: 4 }}>
-                <Grow 
-                  in={isVisible} 
-                  style={{ 
-                    transformOrigin: isMobile ? 'left center' : (index % 2 === 0 ? 'left center' : 'right center'),
-                    transitionDelay: `${index * 150}ms`
-                  }}
-                >
-                <Paper
-                  elevation={3}
-                  sx={{
-                    p: 3,
-                    borderRadius: 2,
-                    position: 'relative',
-                    borderLeft: `4px solid ${dotColorMap[getDotColor(exp.type)]}`,
-                    transition: 'all 0.3s ease',
-                    transform: activeIndex === index ? 'translateY(-5px) scale(1.02)' : 'translateY(0) scale(1)',
-                    boxShadow: activeIndex === index ? theme.shadows[8] : theme.shadows[3],
-                    '&:hover': {
-                      transform: 'translateY(-5px) scale(1.02)',
-                      boxShadow: theme.shadows[8]
-                    },
-                    height: '100%',
+                    p: 1.5, 
+                    borderRadius: '50%', 
+                    background: exp.type === 'work' ? 'rgba(123,97,255,0.2)' : 'rgba(0,229,255,0.2)',
                     display: 'flex',
-                    flexDirection: 'column',
-                    backgroundColor: activeIndex === index ? 
-                      `${theme.palette.background.paper}` : 
-                      theme.palette.background.paper,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: exp.type === 'work' ? '#7B61FF' : '#00E5FF'
                   }}
                 >
-                  <Box sx={{ mb: 1 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                      <Typography 
-                        variant="h6" 
-                        component="h3" 
-                        sx={{ 
-                          fontWeight: 600,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1
-                        }}
-                      >
-                        {exp.role || exp.degree}
-                        {exp.type === 'military' && (
-                          <MilitaryIcon 
-                            fontSize="small" 
-                            color="success" 
-                            sx={{ opacity: 0.8 }} 
-                          />
-                        )}
-                      </Typography>
-                      
-                      <Typography 
-                        variant="subtitle1" 
-                        color="primary" 
-                        sx={{ 
-                          fontWeight: 500,
-                          display: 'flex',
-                          alignItems: 'center',
-                          flexWrap: 'wrap',
-                          gap: 1
-                        }}
-                      >
-                        <span>{exp.company || exp.institution}</span>
-                        {exp.location && (
-                          <Typography 
-                            component="span" 
-                            variant="body2" 
-                            color="text.secondary"
-                            sx={{ 
-                              display: 'flex',
-                              alignItems: 'center',
-                              '& svg': { fontSize: '1rem', mr: 0.5 }
-                            }}
-                          >
-                            <LocationIcon fontSize="inherit" />
-                            {exp.location}
-                          </Typography>
-                        )}
-                      </Typography>
-                      
-                      {isMobile && (
-                        <Typography 
-                          variant="body2" 
-                          color="text.secondary"
-                          sx={{ fontStyle: 'italic' }}
-                        >
-                          {exp.duration}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Box>
-                  
-                  <Box component="ul" sx={{ 
-                    pl: 2.5, 
-                    mb: 2,
-                    '& li': {
-                      mb: 0.5,
-                      '&::marker': {
-                        color: dotColorMap[getDotColor(exp.type)],
-                        fontSize: '1.2em',
-                        lineHeight: 1
-                      }
-                    }
-                  }}>
-                    {exp.description.map((item, i) => (
-                      <Typography 
-                        key={i} 
-                        component="li"
-                        variant="body2"
-                        sx={{ 
-                          opacity: isVisible ? 1 : 0,
-                          animation: isVisible ? `fadeIn 0.5s ease forwards ${(index * 100) + (i * 50) + 200}ms` : 'none',
-                          '@keyframes fadeIn': {
-                            '0%': { opacity: 0, transform: 'translateY(10px)' },
-                            '100%': { opacity: 1, transform: 'translateY(0)' },
-                          },
-                          mb: 1,
-                          '&:first-letter': {
-                            textTransform: 'uppercase'
-                          }
-                        }}
-                      >
-                        {item}
-                      </Typography>
-                    ))}
-                  </Box>
-                  
-                  {exp.skills && exp.skills.length > 0 && (
-            <Box sx={{ 
-              mt: 'auto',
-              pt: 2,
-              borderTop: `1px dashed ${theme.palette.divider}`,
-              '& > div': { mt: 1 }
-            }}>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {exp.skills.map((skill, i) => (
-                  <Fade 
-                    key={i} 
-                    in={isVisible} 
-                    style={{ transitionDelay: `${(index * 100) + (i * 50) + 300}ms` }}
-                  >
+                  {exp.icon}
+                </Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, border: '1px solid rgba(255,255,255,0.1)', padding: '4px 12px', borderRadius: '20px' }}>
+                  {exp.duration}
+                </Typography>
+              </Box>
+
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5, color: 'white' }}>
+                {exp.role || exp.degree}
+              </Typography>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1, flexWrap: 'wrap' }}>
+                <Typography variant="body2" sx={{ color: exp.type === 'work' ? '#7B61FF' : '#00E5FF', fontWeight: 600 }}>
+                  {exp.company || exp.institution}
+                </Typography>
+                {exp.location && (
+                  <>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>•</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', display: 'flex', alignItems: 'center' }}>
+                      <LocationIcon sx={{ fontSize: 14, mr: 0.5 }} />
+                      {exp.location}
+                    </Typography>
+                  </>
+                )}
+              </Box>
+
+              <ul className="pl-5 space-y-2 mb-4 text-sm text-gray-300 list-disc flex-grow">
+                {exp.description.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+
+              {exp.skills && exp.skills.length > 0 && (
+                <Box sx={{ mt: 'auto', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {exp.skills.map((skill, i) => (
                     <Chip
+                      key={i}
                       label={skill}
                       size="small"
-                      icon={<StarIcon fontSize="small" />}
                       sx={{
-                        m: 0.5,
-                        bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-                        color: 'text.primary',
-                        fontWeight: 500,
-                        transition: 'all 0.3s ease',
-                        '& .MuiChip-icon': {
-                          color: dotColorMap[getDotColor(exp.type)],
-                          ml: 0.5,
-                          fontSize: '0.9rem'
-                        },
-                        '& .MuiChip-label': {
-                          px: 1,
-                          fontSize: '0.75rem'
-                        },
-                        height: 24,
-                        '&:hover': {
-                          bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-                          color: theme.palette.text.primary,
-                          transform: 'translateY(-2px)',
-                        }
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        color: 'white',
+                        '&:hover': { background: 'rgba(255,255,255,0.1)' }
                       }}
                     />
-                  </Fade>
-                ))}
-              </Box>
-            </Box>
-          )}
-        </Paper>
-        </Grow>
-      </TimelineContent>
-    </TimelineItem>
-  ))}
-        </Timeline>
+                  ))}
+                </Box>
+              )}
+            </BentoCard>
+          ))}
+        </BentoGrid>
+
         {/* Download Resume Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
           <Fade in={isVisible} style={{ transitionDelay: '300ms' }}>
             <Button
               variant="contained"
-              color="primary"
               size="large"
               href="/Resume_Stephenson_Shaun.pdf"
               target="_blank"
               rel="noopener noreferrer"
               startIcon={<DownloadIcon />}
               sx={{ 
-                px: 3,
-                py: 1,
+                background: 'rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
                 borderRadius: '50px',
-                fontWeight: 600,
-                boxShadow: 3,
+                color: 'white',
+                px: 4,
                 '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: 4
-                },
-                transition: 'all 0.3s ease'
+                  background: 'rgba(255,255,255,0.2)',
+                  borderColor: 'rgba(255,255,255,0.4)',
+                }
               }}
             >
-              Download Resume
+              Download Full Resume
             </Button>
           </Fade>
         </Box>
-      </Container>
-    </Box>
+      </Box>
     </>
   );
 };

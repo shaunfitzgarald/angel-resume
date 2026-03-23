@@ -10,15 +10,18 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     secondary: {
-      main: '#0ACF83', // Emerald/Teal
-      light: '#3EE6A3',
-      dark: '#09A366',
-      contrastText: '#fff',
+      main: '#00E5FF', // Cyan
+      light: '#66EEFF',
+      dark: '#00A3B8',
+      contrastText: '#000',
+    },
+    error: {
+      main: '#FF5E3A', // Sunset Orange
     },
     background: {
-      default: '#0B0F19', // Deep Slate
-      paper: 'rgba(30, 41, 59, 0.7)', // Glassmorphic
-      elevated: '#1E293B',
+      default: '#0a0a0c', // Deep Space Background
+      paper: 'rgba(20, 20, 25, 0.7)', // Glassmorphic Bento Cards
+      elevated: '#1a1a23',
     },
     text: {
       primary: '#F1F5F9',
@@ -42,54 +45,56 @@ const theme = createTheme({
       'sans-serif',
     ].join(','),
     h1: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Clash Display", "Syne", sans-serif',
       fontWeight: 700,
       fontSize: '3.5rem',
       lineHeight: 1.1,
       letterSpacing: '-0.02em',
     },
     h2: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Clash Display", "Syne", sans-serif',
       fontWeight: 600,
       fontSize: '2.5rem',
       lineHeight: 1.2,
       letterSpacing: '-0.01em',
     },
     h3: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Clash Display", "Syne", sans-serif',
       fontWeight: 600,
       fontSize: '2rem',
       lineHeight: 1.3,
     },
     h4: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Clash Display", "Syne", sans-serif',
       fontWeight: 600,
       fontSize: '1.5rem',
       lineHeight: 1.3,
     },
     h5: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Clash Display", "Syne", sans-serif',
       fontWeight: 600,
       fontSize: '1.25rem',
       lineHeight: 1.4,
     },
     h6: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Clash Display", "Syne", sans-serif',
       fontWeight: 600,
       fontSize: '1.1rem',
       lineHeight: 1.4,
     },
     button: {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: '"Inter", sans-serif',
       textTransform: 'none',
       fontWeight: 600,
       letterSpacing: '0.02em',
     },
     body1: {
+      fontFamily: '"Inter", sans-serif',
       fontSize: '1rem',
       lineHeight: 1.6,
     },
     body2: {
+      fontFamily: '"Inter", sans-serif',
       fontSize: '0.875rem',
       lineHeight: 1.6,
     },
@@ -156,12 +161,13 @@ const theme = createTheme({
           },
         },
         containedSecondary: {
-          background: 'linear-gradient(135deg, #0ACF83 0%, #09A366 100%)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #3EE6A3 0%, #0ACF83 100%)',
-            boxShadow: '0 6px 20px rgba(10, 207, 131, 0.4)',
-          },
-        },
+      background: 'linear-gradient(135deg, #00E5FF 0%, #0099AA 100%)',
+      color: '#000',
+      '&:hover': {
+        background: 'linear-gradient(135deg, #33EDFF 0%, #00BBDD 100%)',
+        boxShadow: '0 6px 20px rgba(0, 229, 255, 0.4)',
+      },
+    },
         outlined: {
           borderWidth: 2,
           '&:hover': {
