@@ -13,7 +13,7 @@ function readConsent() {
 // Typing indicator component
 const TypingIndicator = () => (
   <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 1 }}>
-    <Typography variant="caption" color="text.secondary">AI is typing</Typography>
+    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)' }}>AI is typing</Typography>
     <Box sx={{ display: 'flex', gap: 0.5 }}>
       {[0, 1, 2].map((i) => (
         <Box
@@ -22,7 +22,7 @@ const TypingIndicator = () => (
             width: 6,
             height: 6,
             borderRadius: '50%',
-            backgroundColor: 'primary.main',
+            background: 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)',
             animation: `typing 1.4s infinite ease-in-out ${i * 0.2}s`,
             '@keyframes typing': {
               '0%, 60%, 100%': {
@@ -44,12 +44,11 @@ const TypingIndicator = () => (
 function Message({ role, content }) {
   const isUser = role === 'user';
   return (
-    <Stack direction="row" spacing={1.5} alignItems="flex-start">
-      {!isUser && (<Avatar sx={{ width: 28, height: 28 }}>AI</Avatar>)}
-      <Paper variant="outlined" sx={{ p: 1.25, maxWidth: '100%', bgcolor: isUser ? 'primary.light' : 'background.paper', borderColor: isUser ? 'primary.main' : 'divider', color: isUser ? 'primary.contrastText' : 'text.primary' }}>
+    <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
+      {!isUser && (<Avatar sx={{ width: 28, height: 28, background: 'rgba(255,255,255,0.1)', color: '#00E5FF', fontSize: '0.75rem', fontWeight: 700 }}>AI</Avatar>)}
+      <Paper elevation={0} sx={{ p: 1.5, borderRadius: '16px', borderBottomRightRadius: isUser ? 0 : '16px', borderBottomLeftRadius: !isUser ? 0 : '16px', background: isUser ? 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)' : 'rgba(255,255,255,0.05)', border: isUser ? 'none' : '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
         <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{content}</Typography>
       </Paper>
-      {isUser && <Avatar sx={{ width: 28, height: 28 }}>You</Avatar>}
     </Stack>
   );
 }
@@ -68,6 +67,17 @@ export default function ChatWidget({ embedded = false }) {
 
   useEffect(() => { if (open && listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight; }, [open, messages]);
   useEffect(() => { const onUpdate = (e) => setConsent(e.detail); window.addEventListener('cookie-consent-updated', onUpdate); return () => window.removeEventListener('cookie-consent-updated', onUpdate); }, []);
+
+  // Listen for remote open events from anywhere in the app (like the About card button)
+  useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    window.addEventListener('chat-opened', handleOpen);
+    document.addEventListener('chat-opened', handleOpen);
+    return () => {
+      window.removeEventListener('chat-opened', handleOpen);
+      document.removeEventListener('chat-opened', handleOpen);
+    };
+  }, []);
 
   // Track chat session when widget opens
   useEffect(() => {
@@ -159,32 +169,67 @@ export default function ChatWidget({ embedded = false }) {
   };
 
   const container = (
-    <Paper elevation={10} sx={{ width: { xs: '100%', sm: 360 }, height: { xs: '60vh', sm: 480 }, display: 'flex', flexDirection: 'column', borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
-      <Box sx={{ p: 1.25, bgcolor: 'primary.main', color: 'primary.contrastText', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="subtitle1">✨ Ask Shaun AI</Typography>
+    <Paper elevation={0} sx={{ width: { xs: '100%', sm: 380 }, height: { xs: '60vh', sm: 540 }, display: 'flex', flexDirection: 'column', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.1)', background: 'rgba(20, 20, 30, 0.65)', backdropFilter: 'blur(24px)', boxShadow: '0 12px 40px rgba(0,0,0,0.6)' }}>
+      <Box sx={{ p: 2, background: 'linear-gradient(135deg, rgba(123, 97, 255, 0.2) 0%, rgba(0, 229, 255, 0.2) 100%)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="subtitle1" sx={{ color: 'white', fontWeight: 700 }}>✨ Ask Shaun AI</Typography>
         {!embedded && (
-          <IconButton size="small" onClick={() => setOpen(false)} sx={{ color: 'primary.contrastText' }} aria-label="Close chat">
+          <IconButton size="small" onClick={() => setOpen(false)} sx={{ color: 'white', background: 'rgba(255,255,255,0.1)', '&:hover': { background: 'rgba(255,255,255,0.2)' } }} aria-label="Close chat">
             <CloseIcon fontSize="small" />
           </IconButton>
         )}
       </Box>
-      <Box ref={listRef} sx={{ flex: 1, p: 1.25, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+      <Box ref={listRef} sx={{ flex: 1, p: 2, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {messages.map((m, i) => (<Message key={i} role={m.role} content={m.content} />))}
         {loading && (
-          <Stack direction="row" spacing={1.5} alignItems="flex-start">
-            <Avatar sx={{ width: 28, height: 28 }}>AI</Avatar>
-            <Paper variant="outlined" sx={{ p: 1.25, bgcolor: 'background.paper', borderColor: 'divider' }}>
+          <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ maxWidth: '85%' }}>
+            <Avatar sx={{ width: 28, height: 28, background: 'rgba(255,255,255,0.1)', color: '#00E5FF', fontSize: '0.75rem', fontWeight: 700 }}>AI</Avatar>
+            <Paper elevation={0} sx={{ p: 1.5, borderRadius: '16px', borderBottomLeftRadius: 0, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <TypingIndicator />
             </Paper>
           </Stack>
         )}
       </Box>
-      <Box sx={{ p: 1.25, borderTop: '1px solid', borderColor: 'divider' }}>
-        {disabled && (<Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>Chat is disabled with necessary-only cookies. Update your cookie preferences to use the assistant.</Typography>)}
-        <Stack direction="row" spacing={1}>
-          <TextField value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} size="small" fullWidth placeholder="Ask about pricing, services, or Shaun…" disabled={loading || disabled} />
-          <Button variant="contained" onClick={handleSend} disabled={loading || disabled}>Send</Button>
-          {disabled && (<Button variant="outlined" color="inherit" onClick={() => window.dispatchEvent(new Event('cookie-consent-open'))}>Cookie Settings</Button>)}
+      <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)', background: 'rgba(0,0,0,0.2)' }}>
+        {disabled && (<Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', mb: 1, display: 'block' }}>Chat is disabled with necessary-only cookies.</Typography>)}
+        <Stack direction="row" spacing={1.5}>
+          <TextField 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)} 
+            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} 
+            size="small" 
+            fullWidth 
+            placeholder="Ask about pricing, services..." 
+            disabled={loading || disabled} 
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                color: 'white',
+                borderRadius: '50px',
+                background: 'rgba(255,255,255,0.05)',
+                '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+                '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                '&.Mui-focused fieldset': { borderColor: '#00E5FF' },
+              },
+              '& .MuiInputBase-input::placeholder': { color: 'rgba(255,255,255,0.5)', opacity: 1 }
+            }}
+          />
+          <Button 
+            variant="contained" 
+            onClick={handleSend} 
+            disabled={loading || disabled}
+            sx={{
+              borderRadius: '50px',
+              minWidth: 'unset',
+              px: { xs: 2, sm: 3 },
+              background: 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)',
+              color: 'white',
+              fontWeight: 600,
+              boxShadow: '0 4px 14px rgba(123, 97, 255, 0.4)',
+              '&.Mui-disabled': { background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.3)' }
+            }}
+          >
+            Send
+          </Button>
+          {disabled && (<Button variant="outlined" onClick={() => window.dispatchEvent(new Event('cookie-consent-open'))} sx={{ borderRadius: '50px', color: 'white', borderColor: 'rgba(255,255,255,0.2)' }}>Settings</Button>)}
         </Stack>
       </Box>
     </Paper>
@@ -193,13 +238,27 @@ export default function ChatWidget({ embedded = false }) {
   if (embedded) return <Box sx={{ maxWidth: 720, mx: 'auto' }}>{container}</Box>;
 
   return (
-    <Box sx={{ position: 'fixed', right: 16, bottom: 16, zIndex: (t) => t.zIndex.modal + 2 }}>
+    <Box sx={{ position: 'fixed', right: { xs: 16, sm: 24 }, bottom: { xs: 100, sm: 24 }, zIndex: (t) => t.zIndex.modal + 2 }}>
       {open ? (
         container
       ) : (
-        <Tooltip title="Chat with Shaun AI">
-          <IconButton color="primary" onClick={() => { setOpen(true); try { window.dispatchEvent(new CustomEvent('chat-opened')); } catch {} }} sx={{ bgcolor: 'background.paper', boxShadow: 3 }} size="large" aria-label="Open chat">
-            <ChatBubbleOutlineIcon />
+        <Tooltip title="Chat with Shaun AI" placement="left">
+          <IconButton 
+            onClick={() => { setOpen(true); try { window.dispatchEvent(new CustomEvent('chat-opened')); } catch {} }} 
+            sx={{ 
+              background: 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)', 
+              color: 'white',
+              boxShadow: '0 4px 20px rgba(123, 97, 255, 0.6)', 
+              p: 2,
+              '&:hover': {
+                background: 'linear-gradient(135deg, #6A50E5 0%, #00CDE5 100%)',
+                transform: 'scale(1.05)'
+              },
+              transition: 'all 0.3s ease'
+            }} 
+            aria-label="Open chat"
+          >
+            <ChatBubbleOutlineIcon sx={{ fontSize: 28 }} />
           </IconButton>
         </Tooltip>
       )}

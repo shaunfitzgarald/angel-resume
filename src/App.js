@@ -1,51 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   ThemeProvider,
   CssBaseline,
-  Container,
   Box,
-  AppBar,
   Toolbar,
-  Typography,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  useMediaQuery,
-  useTheme,
   useScrollTrigger,
   Fade,
+  IconButton,
 } from '@mui/material';
-import logoImage from './assets/shaunfitzgarald.png';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import theme from './theme';
+import logoImage from './assets/logo-new.png';
 import {
-  Menu as MenuIcon,
-  Home as HomeIcon,
-  Person as PersonIcon,
-  Work as WorkIcon,
-  Code as CodeIcon,
-  Email as EmailIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
-  AttachMoney as AttachMoneyIcon,
-  HelpOutline as HelpOutlineIcon,
-  RateReview as RateReviewIcon,
 } from '@mui/icons-material';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import SchoolIcon from '@mui/icons-material/School';
 import { trackPageView } from './utils/analytics';
 import { HelmetProvider } from 'react-helmet-async';
 
 
 // Import sections
-import Home from './sections/Home';
 import About from './sections/About';
 import Experience from './sections/Experience';
 import Skills from './sections/Skills';
 import Projects from './sections/Projects';
 import Contact from './sections/Contact';
-import Education from './sections/Education';
 import Footer from './sections/Footer';
 import Pricing from './sections/Pricing';
 // import Testimonials from './sections/Testimonials';
@@ -60,8 +39,8 @@ import ChatWidget from './components/ChatWidget';
 import CookieConsent from './components/CookieConsent';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
-
-const drawerWidth = 240;
+import DeepSpaceBackground from './components/DeepSpaceBackground';
+import NavigationDock from './components/NavigationDock';
 
 // Scroll to top on route change and track page views
 function ScrollToTop() {
@@ -127,48 +106,20 @@ function ScrollTop(props) {
   );
 }
 
+const PageWrapper = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+    exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  >
+    {children}
+  </motion.div>
+);
+
 function App() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const menuItems = [
-    // { text: 'Home', icon: <HomeIcon />, path: '/' },
-    { text: 'About', icon: <PersonIcon />, path: '/' },
-    { text: 'Experience', icon: <WorkIcon />, path: '/experience' },
-    { text: 'Skills', icon: <CodeIcon />, path: '/skills' },
-    // { text: 'Education', icon: <SchoolIcon />, path: '/education' },
-    { text: 'Projects', icon: <DataObjectIcon />, path: '/projects' },
-    { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
-    // { text: 'Testimonials', icon: <RateReviewIcon />, path: '/testimonials' },
-    { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
-    { text: 'Help', icon: <HelpOutlineIcon />, path: '/help' },
-  ];
-
-  const drawerContent = (
-    <div>
-      <Toolbar />
-      <List>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.text}
-            component={Link}
-            to={item.path}
-            onClick={() => isMobile && setMobileOpen(false)}
-          >
-            <ListItemIcon sx={{ color: '#ffffff' }}>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} sx={{ color: '#ffffff' }} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
+  const location = useLocation();
+  
   useEffect(() => {
     const CONSENT_STORAGE_KEY = 'cookieConsent.v1';
     const readConsent = () => {
@@ -201,126 +152,98 @@ function App() {
     <HelmetProvider>
       <ThemeProvider theme={theme}>
         <AuthProvider>
+          <DeepSpaceBackground />
           <Box sx={{ 
             display: 'flex', 
             flexDirection: 'column', 
             minHeight: '100vh',
-            background: 'radial-gradient(circle at 50% 0%, #1a2035 0%, #0B0F19 100%)',
+            position: 'relative',
+            zIndex: 1
           }}>
             <CssBaseline />
             <ScrollToTop />
 
-          <AppBar
-            position="fixed"
-            sx={{
-              width: { sm: `calc(100% - ${drawerWidth}px)` },
-              ml: { sm: `${drawerWidth}px` },
-              zIndex: (theme) => theme.zIndex.drawer + 1,
-            }}
-          >
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ mr: 2, display: { sm: 'none' } }}
-              >
-                <MenuIcon />
-              </IconButton>
+            {/* Top Logo Header */}
+            <Box
+              sx={{
+                position: 'fixed',
+                top: 0,
+                width: '100%',
+                zIndex: 40,
+                p: { xs: 2, md: 3 },
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
               <Box
                 component="img"
                 src={logoImage}
                 alt="Shaun Fitzgarald"
                 sx={{
-                  height: { xs: 60, sm: 80, md: 100 },
-                  maxWidth: '90%',
-                  mr: 2,
-                  display: 'flex',
-                  filter: theme => theme.palette.mode === 'dark' ? 'brightness(1.2)' : 'none',
+                  width: { xs: 380, sm: 500, md: 650 },
+                  height: { xs: 85, sm: 110, md: 140 },
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  mixBlendMode: 'screen', // Makes the black background perfectly transparent
+                  filter: 'brightness(1.2)',
+                  pointerEvents: 'none', // Prevents the wider box from blocking clicks
                   transition: 'all 0.3s ease'
                 }}
               />
-            </Toolbar>
-          </AppBar>
+            </Box>
 
-          <Box
-            component="nav"
-            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-          >
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              ModalProps={{ keepMounted: true }}
+            <Box
+              component="main"
               sx={{
-                display: { xs: 'block', sm: 'none' },
-                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                flexGrow: 1,
+                pt: { xs: 16, sm: 20, md: 26 },
+                pb: 16, // Space for NavigationDock
+                px: { xs: 2, md: 4, lg: 8 },
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
-              {drawerContent}
-            </Drawer>
-            <Drawer
-              variant="permanent"
-              sx={{
-                display: { xs: 'none', sm: 'block' },
-                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-              }}
-              open
-            >
-              {drawerContent}
-            </Drawer>
-          </Box>
-
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              width: { sm: `calc(100% - ${drawerWidth}px)` },
-              ml: { sm: `${drawerWidth}px` },
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <Toolbar id="back-to-top-anchor" />
-            <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
-              <Routes>
-                {/* <Route path="/" element={<Home />} /> */}
-                <Route path="/" element={<About />} />
-                <Route path="/experience" element={<Experience />} />
-                <Route path="/skills" element={<Skills />} />
-                {/* <Route path="/education" element={<Education />} /> */}
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/pricing" element={<Pricing />} />
-                {/* <Route path="/testimonials" element={<Testimonials />} /> */}
-                <Route path="/help" element={<Help />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin" element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                } />
-              </Routes>
-            </Container>
+              <Toolbar id="back-to-top-anchor" sx={{ minHeight: 0, p: 0, m: 0 }} />
+              <Box className="w-full max-w-7xl">
+                <AnimatePresence mode="wait">
+                  <Routes location={location} key={location.pathname}>
+                    <Route path="/" element={<PageWrapper><About /></PageWrapper>} />
+                    <Route path="/experience" element={<PageWrapper><Experience /></PageWrapper>} />
+                    <Route path="/skills" element={<PageWrapper><Skills /></PageWrapper>} />
+                    <Route path="/projects" element={<PageWrapper><Projects /></PageWrapper>} />
+                    <Route path="/pricing" element={<PageWrapper><Pricing /></PageWrapper>} />
+                    <Route path="/help" element={<PageWrapper><Help /></PageWrapper>} />
+                    <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+                    <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />
+                    <Route path="/privacy" element={<PageWrapper><Privacy /></PageWrapper>} />
+                    
+                    {/* Admin Routes */}
+                    <Route path="/admin/login" element={<PageWrapper><AdminLogin /></PageWrapper>} />
+                    <Route path="/admin" element={
+                      <ProtectedRoute>
+                        <PageWrapper><AdminDashboard /></PageWrapper>
+                      </ProtectedRoute>
+                    } />
+                  </Routes>
+                </AnimatePresence>
+              </Box>
+            </Box>
+            
             <Footer />
-          </Box>
 
-          <ScrollTop>
-            <IconButton
-              color="primary"
-              aria-label="scroll back to top"
-              sx={{ backgroundColor: 'background.paper', '&:hover': { backgroundColor: 'primary.light' } }}
-            >
-              <KeyboardArrowUpIcon />
-            </IconButton>
-          </ScrollTop>
+            <ScrollTop>
+              <IconButton
+                color="primary"
+                aria-label="scroll back to top"
+                sx={{ backgroundColor: 'background.paper', '&:hover': { backgroundColor: 'primary.light' } }}
+              >
+                <KeyboardArrowUpIcon />
+              </IconButton>
+            </ScrollTop>
           </Box>
+          <NavigationDock />
           <CookieConsent />
           <ChatWidget />
         </AuthProvider>

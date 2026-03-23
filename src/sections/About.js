@@ -1,60 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Box, Typography, Container, Grid, Paper, Button, useTheme, useMediaQuery, keyframes } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { 
-  Person as PersonIcon,
   EmojiEmotions as AboutIcon, 
   LocationOn as LocationIcon 
 } from '@mui/icons-material';
-import { motion, useAnimation } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import shaunAvatar from '../assets/shaun.png'; // TODO: Replace with Shaun's image
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import shaunAvatar from '../assets/shaun.png';
+import { BentoGrid } from '../components/BentoGrid';
+import { BentoCard } from '../components/BentoCard';
 
-// Animation variants
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3
-    }
-  }
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 100,
-      damping: 20
-    }
-  }
-};
-
-const floatingAnimation = keyframes`
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-`;
+const TITLES = [
+  "Developing Custom Web Apps",
+  "Developing AI-Driven Solutions",
+  "Developing Scalable Systems"
+];
 
 const About = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const controls = useAnimation();
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true
-  });
+  const [titleIndex, setTitleIndex] = useState(0);
 
   useEffect(() => {
-    if (inView) {
-      controls.start('show');
-    }
-  }, [controls, inView]);
+    const interval = setInterval(() => {
+      setTitleIndex((prev) => (prev + 1) % TITLES.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
@@ -142,381 +113,202 @@ const About = () => {
     </script>
   </Helmet>
 
-    <Box 
-      component={motion.div}
-      ref={ref}
-      initial="hidden"
-      animate={controls}
-      variants={container}
-      sx={{ 
-        position: 'relative',
-        overflow: 'hidden',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: '-50%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '150%',
-          height: '200%',
-          background: `radial-gradient(circle, ${theme.palette.primary.light}20 0%, transparent 50%)`,
-          borderRadius: '50%',
-          zIndex: -1,
-          opacity: 0.5,
-          animation: `${floatingAnimation} 15s ease-in-out infinite`
-        }
-      }}
-    >
-      {/* Hero Section */}
-      <Box 
-        sx={{ 
-          py: 8,
-          mb: 4
-        }}
-      >
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={4}>
-            <Box sx={{ 
-              position: 'relative',
-              maxWidth: 300,
-              mx: { xs: 'auto', md: 0 },
-              '&:hover': {
-                '& img': { transform: 'scale(1.02)', boxShadow: 8 },
-                '&:after': { opacity: 0.7, transform: 'translate(10px, 10px)' }
-              },
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                top: 15,
-                left: 15,
-                right: -15,
-                bottom: -15,
-                border: '2px solid',
-                borderColor: 'primary.main',
-                borderRadius: '50%',
-                zIndex: -1,
-                transition: 'all 0.3s ease',
-                opacity: 0.5
-              }
-            }}>
-              <Box
-                component="img"
-                src={shaunAvatar}
-                alt="Shaun Stephenson"
-                sx={{
-                  width: '100%',
-                  height: 'auto',
-                  borderRadius: '50%',
-                  border: '4px solid',
-                  borderColor: 'primary.main',
-                  boxShadow: 4,
-                  transition: 'all 0.3s ease',
-                  display: 'block'
-                }}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <motion.div variants={item}>
-              <Typography 
-                variant="body1" 
-                gutterBottom
-                sx={{ 
-                  fontWeight: 500,
-                  mb: 1,
-                  fontSize: '1.2rem',
-                  color: 'text.secondary'
-                }}
-              >
-                Hey there! 👋
-              </Typography>
-              <Typography 
-                variant="h2" 
-                component="h1" 
-                gutterBottom
-                sx={{ 
-                  fontWeight: 900,
-                  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  mb: 2,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  lineHeight: 1.2,
-                  position: 'relative',
-                  display: 'inline-block',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 10,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '80%',
-                    height: '10px',
-                    background: `linear-gradient(90deg, ${theme.palette.primary.light}30, ${theme.palette.secondary.light}70)`,
-                    borderRadius: '10px',
-                    zIndex: -1,
-                    filter: 'blur(5px)'
-                  }
-                }}
-              >
-                San Diego Full Stack Developer Building Custom Web Apps
-              </Typography>
-            </motion.div>
-
-            <motion.div variants={item}>
-              <Typography 
-                variant="h5" 
-                component="h2" 
-                color="textSecondary" 
-                gutterBottom
-                sx={{ 
-                  mb: 4,
-                  fontSize: { xs: '1.2rem', md: '1.5rem' },
-                  fontWeight: 400,
-                  maxWidth: '800px',
-                  px: 2
-                }}
-              >
-                React, Node, TypeScript. Fast builds, clean UX, scalable systems.
-              </Typography>
-            </motion.div>
-
-            <motion.div variants={item}>
-              <Typography 
-                variant="body1" 
-                sx={{ 
-                  maxWidth: '700px', 
-                  mb: 4,
-                  fontSize: '1.1rem',
-                  lineHeight: 1.7,
-                  px: 2,
-                  color: 'text.primary',
-                  '&::first-letter': {
-                    fontSize: '2.5rem',
-                    fontWeight: 'bold',
-                    color: theme.palette.primary.main,
-                    float: 'left',
-                    lineHeight: 1,
-                    mr: 1,
-                    mt: 0.5
-                  }
-                }}
-                component={motion.p}
-                initial={{ opacity: 0 }}
-                animate={{ 
-                  opacity: 1,
-                  transition: { delay: 0.6 }
-                }}
-              >
-                This is what I do: I build modern web applications that solve real problems. 
-                Whether you need a sleek business website, a custom web app, or help bringing 
-                your digital vision to life, I've got you covered. I love turning complex ideas 
-                into simple, beautiful, and functional solutions.
-              </Typography>
-            </motion.div>
-
-            <motion.div variants={item}>
-              <Box sx={{ 
-                mt: 4, 
-                display: 'flex', 
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: 2, 
-                alignItems: 'center'
-              }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  href="/experience"
-                  component={motion.a}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  sx={{ 
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                    borderRadius: '50px',
-                    boxShadow: `0 4px 0 ${theme.palette.primary.dark}`,
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: `0 6px 0 ${theme.palette.primary.dark}`
-                    },
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  View My Experience
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                  href="/contact"
-                  component={motion.a}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  sx={{ 
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                    borderWidth: 2,
-                    borderRadius: '50px',
-                    '&:hover': {
-                      borderWidth: 2,
-                      transform: 'translateY(-2px)'
-                    },
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  Let's Work Together
-                </Button>
-              </Box>
-            </motion.div>
-          </Grid>
-        </Grid>
-      </Box>
-
-          
-      {/* About Details Section */}
-      <Container maxWidth="md">
-        <Box sx={{ py: 4 }}>
-        <motion.div variants={item}>
-          <Typography variant="h3" component="h2" gutterBottom sx={{ 
-            mb: 4, 
-            color: 'primary.main',
-            fontWeight: 600,
-            textAlign: 'center'
-          }}>
-            More About Me
-          </Typography>
-        </motion.div>
+    <Box sx={{ width: '100%', pt: 4, pb: 12 }}>
+      <BentoGrid>
         
-        <motion.div variants={item}>
-          <Grid container spacing={4} alignItems="stretch">
-            
-          {/* Who am I & How I Work */}
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} sx={{ 
-              p: 3, 
-              borderRadius: 2,
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              '&:hover': {
-                boxShadow: 6,
-                transform: 'translateY(-2px)',
-                transition: 'all 0.3s ease-in-out'
-              }
-            }}>
-              <Typography 
-                variant="h5" 
-                component="h2" 
-                gutterBottom 
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  color: 'primary.main',
-                  fontWeight: 600,
-                  mb: 2
-                }}
-              >
-                <PersonIcon color="primary" sx={{ mr: 1, fontSize: 'inherit' }} />
-                Who am I?
+        {/* Intro / Avatar Bento Card (Spans 2 columns) */}
+        <BentoCard className="md:col-span-2 row-span-2 flex flex-col justify-end" delay={0.1}>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#7B61FF]/40 to-transparent rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+          
+          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 4, mb: 4 }}>
+            <Box
+              component="img"
+              src={shaunAvatar}
+              alt="Shaun Fitzgarald"
+              sx={{
+                width: { xs: 120, sm: 160 },
+                height: { xs: 120, sm: 160 },
+                flexShrink: 0,
+                borderRadius: '50%',
+                border: '4px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                objectFit: 'cover'
+              }}
+            />
+            <Box>
+              <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500, mb: 1, fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: 2 }}>
+                Full-Stack Developer | AI Integrations | Scalable Architecture
               </Typography>
-              <Typography paragraph sx={{ mb: 3, lineHeight: 1.8 }}>
-                I'm a full-stack developer with a passion for creating modern, user-focused web applications. 
-                Currently pursuing my Computer Science degree while building real solutions for clients. 
-                I thrive in fast-paced environments and excel at translating complex technical requirements 
-                into clean, functional code that solves real problems.
+              <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.2, mb: 2, minHeight: { xs: 'auto', md: '120px' } }}>
+                I'm Shaun,<br />
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={titleIndex}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-[#7B61FF] to-[#00E5FF] inline-block"
+                  >
+                    {TITLES[titleIndex]}
+                  </motion.span>
+                </AnimatePresence>
               </Typography>
-              
-              <Typography 
-                variant="h5" 
-                component="h2" 
-                gutterBottom 
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  mt: 3,
-                  color: 'primary.main',
-                  fontWeight: 600,
-                  mb: 2
-                }}
-              >
-                <AboutIcon color="primary" sx={{ mr: 1, fontSize: 'inherit' }} />
-                How I Work
-              </Typography>
-              <Typography paragraph sx={{ lineHeight: 1.8, mb: 2 }}>
-                I believe in clear communication and collaborative problem-solving. Whether working with 
-                clients to understand their vision or debugging complex technical issues, I approach every 
-                challenge with patience and attention to detail.
-              </Typography>
-              <Typography paragraph sx={{ lineHeight: 1.8 }}>
-                My experience managing multiple client projects while attending school full-time has taught me 
-                excellent time management and prioritization skills. I deliver quality work on deadline and 
-                maintain open communication throughout the development process.
-              </Typography>
-            </Paper>
-          </Grid>
+            </Box>
+          </Box>
+          
+          <Typography variant="body1" sx={{ color: 'text.primary', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: '600px', mb: 2 }}>
+            I build high-performance React applications fueled by Gemini and Firebase to turn complex ideas into seamless digital experiences.
+          </Typography>
+          
 
-          {/* Location & Contact: Map + Contact Button */}
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} sx={{ 
-              p: 3, 
-              borderRadius: 2, 
-              '&:hover': {
-                boxShadow: 6,
-                transform: 'translateY(-2px)',
-                transition: 'all 0.3s ease-in-out'
-              }
-            }}>
-              <Typography variant="h5" component="h3" gutterBottom sx={{ 
-                color: 'primary.main',
-                display: 'flex',
-                alignItems: 'center',
-                mb: 3
-              }}>
-                <LocationIcon color="primary" sx={{ mr: 1, fontSize: 'inherit' }} />
-                Location & Contact
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h6" sx={{ mb: 0.5 }}>San Diego, California</Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                    Hillcrest, San Diego, CA 92103
-                  </Typography>
-                </Box>
-                {/* Google Maps Embed */}
-                <Box sx={{ 
-                  width: '100%', 
-                  height: 250, 
-                  borderRadius: 1,
-                  overflow: 'hidden',
-                  border: '1px solid',
-                  borderColor: 'divider'
-                }}>
-                  <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26889.42977003!2d-117.16498394999999!3d32.7472569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d954c7f5df33f5%3A0x7cc1e6e25add0087!2sHillcrest%2C%20San%20Diego%2C%20CA!5e0!3m2!1sen!2sus!4v1656465858000!5m2!1sen!2sus" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen="" 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Hillcrest, San Diego Map"
-                  />
-                </Box>
-                <Box sx={{ textAlign: 'center', mt: 1 }}>
-                  <Button variant="contained" color="primary" size="large" href="/contact">
-                    Contact Me
-                  </Button>
-                </Box>
-              </Box>
-            </Paper>
-          </Grid>
-          </Grid>
-        </motion.div>
-      </Box>
-    </Container>
+
+          <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+            <Button
+              component={Link}
+              to="/contact"
+              variant="contained"
+              sx={{
+                background: 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)',
+                color: '#fff',
+                fontWeight: 600,
+                borderRadius: '50px',
+                px: 4,
+                py: 1.5,
+              }}
+            >
+              Start a Project
+            </Button>
+            <Button
+              component={Link}
+              to="/projects"
+              variant="outlined"
+              sx={{
+                borderColor: 'rgba(255,255,255,0.2)',
+                color: '#fff',
+                fontWeight: 600,
+                borderRadius: '50px',
+                px: 4,
+                py: 1.5,
+                '&:hover': {
+                  borderColor: 'rgba(255,255,255,0.5)',
+                  backgroundColor: 'rgba(255,255,255,0.05)',
+                }
+              }}
+            >
+              See the Work →
+            </Button>
+          </Box>
+        </BentoCard>
+
+        {/* Powered by Intelligence Card */}
+        <BentoCard className="md:col-span-1 flex flex-col justify-center" delay={0.15}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: 'white' }}>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5E3A] to-[#FF9A44]">Powered by Intelligence</span>
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+            I integrate Gemini Pro directly into web workflows, creating apps that can think, summarize, and automate—not just display data.
+          </Typography>
+        </BentoCard>
+
+        {/* AI Chat / Vibrant Card */}
+        <BentoCard className="md:col-span-1 row-span-2 group overflow-hidden" delay={0.2}>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#00E5FF]/20 via-[#7B61FF]/20 to-[#FF5E3A]/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="relative z-10 flex flex-col h-full items-center justify-center text-center">
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#7B61FF] to-[#00E5FF] mb-6 flex items-center justify-center shadow-[0_0_40px_rgba(123,97,255,0.5)]"
+            >
+              <Typography variant="h3" sx={{ color: 'white', fontWeight: 800 }}>AI</Typography>
+            </motion.div>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Chat with my<br/>AI Assistant</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
+              Powered by Genkit & Gemini. Ask about my experience, skills, or rates!
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => document.dispatchEvent(new CustomEvent('chat-opened'))}
+              sx={{
+                background: 'rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '50px',
+                color: 'white',
+                '&:hover': {
+                  background: 'rgba(255,255,255,0.2)',
+                }
+              }}
+            >
+              Open AI Chat
+            </Button>
+          </div>
+        </BentoCard>
+
+        {/* Who Am I? Card (Fills Row 2, Col 3) */}
+        <BentoCard className="md:col-span-1 relative overflow-hidden group" delay={0.25} noPadding>
+          <Box sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#00E5FF]/20 to-transparent rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5, color: 'white' }}>Who am I?</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6, fontSize: '0.85rem' }}>
+              I’m a developer obsessed with clean design and complex logic. While completing my CS degree, I've built scalable systems—from Firebase workflows to AI-driven Genkit applications. I focus on building seamless digital experiences.
+            </Typography>
+          </Box>
+        </BentoCard>
+
+        {/* Info Card 1 - The Workflow */}
+        <BentoCard className="md:col-span-2 md:row-span-2 flex flex-col h-full" delay={0.3}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <AboutIcon sx={{ fontSize: 32, color: '#7B61FF', mr: 2 }} />
+            <Typography variant="h5" sx={{ fontWeight: 700, color: 'white' }}>The Workflow</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flexGrow: 1, justifyContent: 'center' }}>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#00E5FF' }}>Strategy First</Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>We define the "why" before the "how."</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#00E5FF' }}>Rapid Development</Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>Using a modern stack (React + Vite + Tailwind) to move from mockup to MVP in record time.</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#00E5FF' }}>Scalable Core</Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>Every line of code is written with your future growth in mind—backed by the reliability of Firebase.</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#00E5FF' }}>Open Loop</Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>You’re never in the dark. Constant communication and iterative updates are my standard.</Typography>
+            </Box>
+          </Box>
+        </BentoCard>
+
+        {/* Location & Contact Map */}
+        <BentoCard className="md:col-span-2 md:row-span-2 flex flex-col h-full" delay={0.4}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <LocationIcon sx={{ color: '#FF5E3A', mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>Based in San Diego, CA</Typography>
+          </Box>
+          <Box sx={{ 
+            width: '100%', 
+            flexGrow: 1, 
+            borderRadius: 3,
+            overflow: 'hidden',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26889.42977003!2d-117.16498394999999!3d32.7472569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d954c7f5df33f5%3A0x7cc1e6e25add0087!2sHillcrest%2C%20San%20Diego%2C%20CA!5e0!3m2!1sen!2sus!4v1656465858000!5m2!1sen!2sus" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(80%) contrast(120%)' }} 
+              allowFullScreen="" 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              title="San Diego Location Map"
+            />
+          </Box>
+        </BentoCard>
+
+      </BentoGrid>
     </Box>
     </>
   );

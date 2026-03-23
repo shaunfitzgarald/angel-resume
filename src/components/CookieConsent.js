@@ -73,13 +73,15 @@ export default function CookieConsent() {
     >
       <Container maxWidth="lg">
         <Paper
-          elevation={8}
+          elevation={0}
           sx={{
-            p: { xs: 2, sm: 2.5 },
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: (theme) => theme.palette.background.paper,
+            p: { xs: 2, sm: 3 },
+            borderRadius: 4,
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(20, 20, 30, 0.6)',
+            backdropFilter: 'blur(16px)',
+            color: 'white',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
           }}
         >
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between">
@@ -96,10 +98,36 @@ export default function CookieConsent() {
               </Typography>
             </Box>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ width: { xs: '100%', sm: 'auto' } }}>
-              <Button variant="outlined" color="inherit" onClick={handleNecessaryOnly} fullWidth>
+              <Button 
+                variant="outlined" 
+                onClick={handleNecessaryOnly} 
+                fullWidth
+                sx={{
+                  color: 'white',
+                  borderColor: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50px',
+                  px: 3,
+                  '&:hover': {
+                    borderColor: 'rgba(255, 255, 255, 0.5)',
+                    background: 'rgba(255, 255, 255, 0.05)'
+                  }
+                }}
+              >
                 Accept necessary only
               </Button>
-              <Button variant="contained" color="primary" onClick={handleAcceptAll} fullWidth>
+              <Button 
+                variant="contained" 
+                onClick={handleAcceptAll} 
+                fullWidth
+                sx={{
+                  background: 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)',
+                  color: 'white',
+                  borderRadius: '50px',
+                  fontWeight: 600,
+                  px: 3,
+                  boxShadow: '0 4px 14px rgba(123, 97, 255, 0.4)',
+                }}
+              >
                 Accept all cookies
               </Button>
             </Stack>

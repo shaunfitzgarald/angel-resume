@@ -18,11 +18,11 @@ const Footer = () => {
       sx={{
         py: 6,
         mt: 'auto',
-        background: 'rgba(11, 15, 25, 0.8)',
-        backdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+        background: 'transparent',
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
         position: 'relative',
         zIndex: 10,
+        width: '100%',
       }}
     >
       <Container maxWidth="lg">
@@ -52,11 +52,8 @@ const Footer = () => {
           </Stack>
 
           <Box textAlign="center">
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Designed & Built by Shaun Fitzgarald
-            </Typography>
-            <Typography variant="caption" color="text.disabled">
-              © {currentYear} All Rights Reserved
+            <Typography variant="body2" color="text.secondary">
+              Built with ❤️ & Coffee in San Diego
             </Typography>
           </Box>
         </Stack>

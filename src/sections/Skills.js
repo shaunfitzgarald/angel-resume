@@ -1,14 +1,13 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Box, Container, Typography, Grid, Card, CardContent, LinearProgress, Stack } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Box, Typography, LinearProgress, Stack } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import StorageIcon from '@mui/icons-material/Storage';
 import CloudIcon from '@mui/icons-material/Cloud';
 import WorkIcon from '@mui/icons-material/Work';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-
-// Data
+import { BentoGrid } from '../components/BentoGrid';
+import { BentoCard } from '../components/BentoCard';
 const skillsData = [
   {
     category: 'Frontend Development',
@@ -77,8 +76,6 @@ const skillsData = [
 ];
 
 const Skills = () => {
-  const theme = useTheme();
-
   return (
     <>
       <Helmet>
@@ -89,69 +86,83 @@ const Skills = () => {
         />
         <link rel="canonical" href="https://shaunfitzgarald.com/skills" />
       </Helmet>
-      <Box id="skills" sx={{ py: 12, position: 'relative' }}>
-      <Container maxWidth="lg">
+      <Box id="skills" sx={{ width: '100%', pt: 4, pb: 12 }}>
         <Box sx={{ mb: 8, textAlign: 'center' }}>
-          <Typography variant="h2" component="h2" gutterBottom sx={{ 
-            background: 'linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
-            Skills & Technologies
+          <Typography 
+            variant="h2" 
+            component="h1" 
+            gutterBottom 
+            sx={{ 
+              fontWeight: 800,
+              fontSize: { xs: '2.5rem', sm: '3.5rem' },
+              color: 'white'
+            }}
+          >
+            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7B61FF] to-[#00E5FF]">Tech Stack</span>
           </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+          <Typography variant="h6" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto' }}>
             A comprehensive toolkit for building modern, scalable, and user-friendly applications.
           </Typography>
         </Box>
 
-        <Grid container spacing={4}>
+        <BentoGrid>
           {skillsData.map((category, index) => (
-            <Grid item xs={12} md={6} lg={4} key={index}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <CardContent sx={{ flexGrow: 1, p: 4 }}>
-                  <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
-                    {category.icon}
-                    <Typography variant="h5" component="h3" fontWeight="bold">
-                      {category.category}
-                    </Typography>
-                  </Stack>
-                  
-                  <Stack spacing={2}>
-                    {category.skills.map((skill) => (
-                      <Box key={skill.name}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                          <Typography variant="body2" fontWeight="500">
-                            {skill.name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {skill.level}%
-                          </Typography>
-                        </Box>
-                        <LinearProgress 
-                          variant="determinate" 
-                          value={skill.level} 
-                          sx={{ 
-                            height: 6, 
-                            borderRadius: 3,
-                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-                            '& .MuiLinearProgress-bar': {
-                              borderRadius: 3,
-                              background: index % 2 === 0 
-                                ? `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`
-                                : `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.light})`,
-                            }
-                          }} 
-                        />
-                      </Box>
-                    ))}
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
+            <BentoCard 
+              key={index} 
+              delay={0.1 * index}
+              className={index === 0 || index === 1 ? "md:col-span-2" : ""}
+            >
+              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
+                <Box 
+                  sx={{ 
+                    p: 1.5, 
+                    borderRadius: '12px', 
+                    background: 'rgba(255,255,255,0.05)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {category.icon}
+                </Box>
+                <Typography variant="h5" component="h3" sx={{ fontWeight: 700, color: 'white' }}>
+                  {category.category}
+                </Typography>
+              </Stack>
+              
+              <Stack spacing={3}>
+                {category.skills.map((skill) => (
+                  <Box key={skill.name}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body1" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        {skill.name}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                        {skill.level}%
+                      </Typography>
+                    </Box>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={skill.level} 
+                      sx={{ 
+                        height: 8, 
+                        borderRadius: 4,
+                        bgcolor: 'rgba(255,255,255,0.05)',
+                        '& .MuiLinearProgress-bar': {
+                          borderRadius: 4,
+                          background: index % 2 === 0 
+                            ? 'linear-gradient(90deg, #7B61FF, #00E5FF)'
+                            : 'linear-gradient(90deg, #FF5E3A, #7B61FF)',
+                        }
+                      }} 
+                    />
+                  </Box>
+                ))}
+              </Stack>
+            </BentoCard>
           ))}
-        </Grid>
-      </Container>
-    </Box>
+        </BentoGrid>
+      </Box>
     </>
   );
 };
