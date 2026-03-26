@@ -206,12 +206,12 @@ const Experience = () => {
           </Typography>
         </Zoom>
         
-        <BentoGrid>
+        <BentoGrid isMasonry>
           {sortedExperiences.map((exp, index) => (
             <BentoCard 
               key={exp.id} 
               delay={0.1 * (index % 5)}
-              className={index === 0 ? "md:col-span-2 row-span-2" : ""}
+              className="mb-4 xl:mb-6"
             >
               <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box 

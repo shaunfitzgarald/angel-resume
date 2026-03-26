@@ -19,7 +19,7 @@ export const BentoCard = ({ className = '', children, delay = 0, onClick, noPadd
       whileHover={{ scale: 0.98 }}
       onMouseMove={handleMouseMove}
       onClick={onClick}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-[#1e293b]/50 ${noPadding ? '' : 'p-6 sm:p-8'} backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all shadow-2xl ${
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-[#1e293b]/50 ${noPadding ? '' : 'p-6 sm:p-8'} backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all shadow-2xl break-inside-avoid ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
     >
