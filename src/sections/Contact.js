@@ -216,7 +216,7 @@ const Contact = () => {
 
       <BentoGrid>
         {/* Contact Info Card */}
-        <BentoCard className="md:col-span-1 lg:col-span-1 xl:col-span-1 row-span-2 flex flex-col h-full" delay={0.1}>
+        <BentoCard className="md:col-span-1 lg:col-span-1 xl:col-span-1 md:row-span-2 flex flex-col" delay={0.1}>
           <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 700, color: 'white' }}>
             Contact Information
           </Typography>
@@ -294,7 +294,7 @@ const Contact = () => {
         </BentoCard>
 
         {/* Contact Form Card */}
-        <BentoCard className="md:col-span-2 lg:col-span-2 xl:col-span-3 row-span-2 flex flex-col h-full" delay={0.2}>
+        <BentoCard className="md:col-span-2 lg:col-span-2 xl:col-span-3 md:row-span-2 flex flex-col" delay={0.2}>
             <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 2, fontWeight: 700, color: 'white' }}>
               Send Me a Message
             </Typography>

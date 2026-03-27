@@ -10,7 +10,7 @@ export const BentoGrid = ({ className, children, isMasonry = false }) => {
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xl:gap-6 auto-rows-[250px] w-full ${className || ''}`}>
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xl:gap-6 auto-rows-min md:auto-rows-[minmax(250px,_auto)] w-full ${className || ''}`}>
       {children}
     </div>
   );
