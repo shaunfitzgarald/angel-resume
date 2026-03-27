@@ -120,7 +120,7 @@ const About = () => {
         <BentoCard className="md:col-span-2 row-span-2 flex flex-col justify-end" delay={0.1}>
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#7B61FF]/40 to-transparent rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
           
-          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 4, mb: 4 }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 4, mb: 2 }}>
             <Box
               component="img"
               src={shaunAvatar}
@@ -139,7 +139,7 @@ const About = () => {
               <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500, mb: 1, fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: 2 }}>
                 Full-Stack Developer | AI Integrations | Scalable Architecture
               </Typography>
-              <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.2, mb: 2, minHeight: { xs: 'auto', md: '120px' } }}>
+              <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.2, mb: 2, minHeight: { xs: 'auto', md: '160px' } }}>
                 I'm Shaun,<br />
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -157,13 +157,13 @@ const About = () => {
             </Box>
           </Box>
           
-          <Typography variant="body1" sx={{ color: 'text.primary', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: '600px', mb: 2 }}>
+          <Typography variant="body1" sx={{ color: 'text.primary', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: '600px', mb: 1 }}>
             I build high-performance React applications fueled by Gemini and Firebase to turn complex ideas into seamless digital experiences.
           </Typography>
           
 
 
-          <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
             <Button
               component={Link}
               to="/contact"
