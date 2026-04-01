@@ -15,6 +15,7 @@ import sdStartupMapImg from '../assets/SDStartUpMap.png';
 import chicklechatImg from '../assets/chickle-chat.gif';
 import kelseySinclairImg from '../assets/kelseysinclaire.gif';
 import eventsAppScreenshot from '../assets/events-app-screenshot.png'
+import sdHomelessInfoImg from '../assets/sd-homeless-info.png';
 
 const projects = [
   {
@@ -42,12 +43,12 @@ const projects = [
     demo: 'https://everything-bja.web.app'
   },
   {
-    title: 'EventsHub',
-    description: 'A full-stack events management platform built with React and Firebase. It provides end-to-end workflows—event creation, RSVPs, guest messaging, budgeting, calendar views, and social promotion—plus robust AI integrations for content generation, insights, and automation. Try it using the demo account (email: test@example.com, password: password).',
-    image: eventsAppScreenshot,
-    tags: ['React', 'Firebase', 'Material-UI', 'AI', 'RSVP', 'Calendar', 'Budgeting'],
-    github: 'https://github.com/shaunfitzgarald/events-app',
-    demo: 'https://events-app-shaun-stephensons-projects.vercel.app'
+    title: 'San Diego Homeless Info',
+    description: 'A comprehensive interactive resource map for San Diego\'s homeless community. Features real-time transit data via OneBusAway, intelligent resource navigation with Google Gemini AI, and a full-stack dashboard for resource management.',
+    image: sdHomelessInfoImg,
+    tags: ['React', 'Firebase', 'Google Maps API', 'Gemini AI', 'Material UI'],
+    github: 'https://github.com/shaunfitzgarald/passion-project.git',
+    demo: 'https://sandiegohomeless.info'
   },
   {
     title: 'Kelsey Sinclaire',
@@ -74,6 +75,14 @@ const projects = [
     tags: ['React', 'Node.js', 'Firebase', 'Vertex AI', 'Healthcare'],
     // github: 'https://github.com/shaunfitzgarald/posture-portal',
     demo: 'https://posture-portal.com'
+  },
+  {
+    title: 'EventsHub',
+    description: 'A full-stack events management platform built with React and Firebase. It provides end-to-end workflows—event creation, RSVPs, guest messaging, budgeting, calendar views, and social promotion—plus robust AI integrations for content generation, insights, and automation. Try it using the demo account (email: test@example.com, password: password).',
+    image: eventsAppScreenshot,
+    tags: ['React', 'Firebase', 'Material-UI', 'AI', 'RSVP', 'Calendar', 'Budgeting'],
+    github: 'https://github.com/shaunfitzgarald/events-app',
+    demo: 'https://events-app-shaun-stephensons-projects.vercel.app'
   },
   // {
   //   title: 'ChickleChat',
