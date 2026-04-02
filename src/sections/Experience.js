@@ -52,7 +52,7 @@ const experiences = [
     icon: <WorkIcon />
   },
   {
-    id: 3,
+    id: 4,
     role: 'Fulfillment Technician',
     company: 'Curology, Inc.',
     location: 'San Diego, CA',
@@ -67,7 +67,7 @@ const experiences = [
     icon: <WorkIcon />
   },
   {
-    id: 4,
+    id: 5,
     role: 'Personal Executive Assistant',
     company: 'Independent Contractor',
     location: 'San Diego, CA',
@@ -82,7 +82,7 @@ const experiences = [
     icon: <WorkIcon />
   },
   {
-    id: 5,
+    id: 6,
     role: 'Brand Representative',
     company: 'Abercrombie & Fitch / Hollister Co.',
     location: 'San Diego, CA',
@@ -97,7 +97,7 @@ const experiences = [
     icon: <WorkIcon />
   },
   {
-    id: 6,
+    id: 7,
     degree: 'Associate Degree for Transfer, Computer Science',
     institution: 'San Diego Mesa College',
     location: 'San Diego, CA',
@@ -111,7 +111,7 @@ const experiences = [
     icon: <SchoolIcon />
   },
   {
-    id: 7,
+    id: 8,
     degree: 'Full-Stack Web Development Bootcamp',
     institution: 'LEARN Academy',
     location: 'San Diego, CA',
@@ -126,7 +126,7 @@ const experiences = [
     icon: <SchoolIcon />
   },
   {
-    id: 8,
+    id: 9,
     degree: 'B.S., Human Biology - Minor: International Business & German',
     institution: 'University of California, San Diego',
     location: 'San Diego, CA',
@@ -140,7 +140,7 @@ const experiences = [
     icon: <SchoolIcon />
   },
   {
-    id: 9,
+    id: 10,
     degree: 'Intensive German Language Program',
     institution: 'Die Neue Schule',
     location: 'Berlin, Germany',
@@ -206,12 +206,12 @@ const Experience = () => {
           </Typography>
         </Zoom>
         
-        <BentoGrid isMasonry>
+        <BentoGrid>
           {sortedExperiences.map((exp, index) => (
             <BentoCard 
               key={exp.id} 
               delay={0.1 * (index % 5)}
-              className="mb-4 xl:mb-6"
+              className="h-full"
             >
               <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box 
