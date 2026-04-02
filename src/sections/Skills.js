@@ -105,12 +105,12 @@ const Skills = () => {
           </Typography>
         </Box>
 
-        <BentoGrid isMasonry>
+        <BentoGrid>
           {skillsData.map((category, index) => (
             <BentoCard 
               key={index} 
               delay={0.1 * index}
-              className="mb-4 xl:mb-6"
+              className="h-full"
             >
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
                 <Box 
