@@ -65,7 +65,8 @@ const projects = [
     video: 'https://www.youtube.com/embed/-ZHwy2b2bLs',
     tags: ['React', 'Firebase', 'Authentication', 'Content Management', 'AI Genkit'],
     // github: 'https://github.com/shaunfitzgarald/angel',
-    demo: 'https://angelpost.me'
+    // demo: 'https://angelpost.me'
+    demo: 'https://angelpost.vercel.app'
   },
   {
     title: 'PosturePortal',
