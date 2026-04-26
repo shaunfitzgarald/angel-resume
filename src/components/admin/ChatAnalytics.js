@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, query, orderBy, onSnapshot, where, getDocs, limit } from 'firebase/firestore';
+import { collection, query, orderBy, where, getDocs, limit } from 'firebase/firestore';
 import {
   Box,
   Typography,
@@ -27,15 +27,10 @@ import {
 import {
   Chat as ChatIcon,
   Message as MessageIcon,
-  TrendingUp as TrendingUpIcon,
-  People as PeopleIcon,
-  AccessTime as TimeIcon,
-  ThumbUp as ThumbUpIcon,
-  ThumbDown as ThumbDownIcon
+  AccessTime as TimeIcon
 } from '@mui/icons-material';
 
 const ChatAnalytics = () => {
-  const [chatSessions, setChatSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState('7'); // days
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,12 +38,12 @@ const ChatAnalytics = () => {
     totalSessions: 0,
     totalMessages: 0,
     averageSessionLength: 0,
-    satisfactionRate: 0,
     recentSessions: []
   });
 
   useEffect(() => {
     loadChatData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFilter]);
 
   const loadChatData = async () => {
@@ -109,9 +104,6 @@ const ChatAnalytics = () => {
       const averageSessionLength = sessions.length > 0 
         ? sessions.reduce((sum, session) => sum + (session.duration || 0), 0) / sessions.length / 1000 / 60 // Convert to minutes
         : 0;
-      
-      // Calculate satisfaction rate (for now, we'll use a placeholder since we don't have feedback data yet)
-      const satisfactionRate = sessions.length > 0 ? 85 : 0; // Placeholder rate
 
       // Get recent sessions with message previews
       const recentSessions = sessions.slice(0, 10).map(session => {
@@ -127,7 +119,6 @@ const ChatAnalytics = () => {
           timestamp: session.timestamp,
           messageCount: session.messageCount || 0,
           duration: session.duration || 0,
-          satisfaction: Math.random() > 0.1 ? 'positive' : 'neutral', // Mock satisfaction
           lastMessage: lastMessageContent,
           sessionId: session.sessionId
         };
@@ -137,11 +128,8 @@ const ChatAnalytics = () => {
         totalSessions,
         totalMessages,
         averageSessionLength: Math.round(averageSessionLength * 10) / 10,
-        satisfactionRate,
         recentSessions
       });
-
-      setChatSessions(sessions);
     } catch (error) {
       console.error('Error loading chat data:', error);
     }
@@ -157,22 +145,6 @@ const ChatAnalytics = () => {
 
   const formatDate = (date) => {
     return date.toLocaleString();
-  };
-
-  const getSatisfactionColor = (satisfaction) => {
-    switch (satisfaction) {
-      case 'positive': return 'success';
-      case 'negative': return 'error';
-      default: return 'default';
-    }
-  };
-
-  const getSatisfactionIcon = (satisfaction) => {
-    switch (satisfaction) {
-      case 'positive': return <ThumbUpIcon />;
-      case 'negative': return <ThumbDownIcon />;
-      default: return <MessageIcon />;
-    }
   };
 
   const filteredSessions = analyticsData.recentSessions.filter(session =>
@@ -290,22 +262,7 @@ const ChatAnalytics = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <TrendingUpIcon color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6">Satisfaction</Typography>
-              </Box>
-              <Typography variant="h4" color="primary">
-                {analyticsData.satisfactionRate}%
-              </Typography>
-              <Typography color="text.secondary">
-                Positive feedback rate
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+
       </Grid>
 
       {/* Recent Sessions Table */}
@@ -322,7 +279,6 @@ const ChatAnalytics = () => {
                 <TableCell>Time</TableCell>
                 <TableCell>Messages</TableCell>
                 <TableCell>Duration</TableCell>
-                <TableCell>Satisfaction</TableCell>
                 <TableCell>Last Message</TableCell>
               </TableRow>
             </TableHead>
@@ -352,15 +308,7 @@ const ChatAnalytics = () => {
                         variant="outlined"
                       />
                     </TableCell>
-                    <TableCell>{formatDuration(session.duration)}</TableCell>
-                    <TableCell>
-                      <Chip
-                        icon={getSatisfactionIcon(session.satisfaction)}
-                        label={session.satisfaction}
-                        color={getSatisfactionColor(session.satisfaction)}
-                        size="small"
-                      />
-                    </TableCell>
+                    <TableCell>{formatDuration(session.duration || 0)}</TableCell>
                     <TableCell>
                       <Typography variant="body2" noWrap sx={{ maxWidth: 300 }}>
                         {session.lastMessage}

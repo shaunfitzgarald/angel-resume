@@ -22,31 +22,48 @@ import {
   Select,
   MenuItem,
   Button,
-  LinearProgress
+  LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemText,
+  Divider
 } from '@mui/material';
 import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+import {
   Visibility as VisibilityIcon,
-  TrendingUp as TrendingUpIcon,
   People as PeopleIcon,
   AccessTime as TimeIcon,
-  MouseIcon as ClickIcon,
-  ExitToApp as ExitIcon,
-  Home as HomeIcon,
-  Work as WorkIcon,
-  Code as CodeIcon,
-  Email as EmailIcon,
-  AttachMoney as MoneyIcon
+  ExitToApp as ExitIcon
 } from '@mui/icons-material';
 
 const WebsiteAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState('7'); // days
   const [analyticsData, setAnalyticsData] = useState(null);
+  
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [dialogType, setDialogType] = useState(''); // 'page', 'activity', etc.
 
   useEffect(() => {
     // In a real implementation, you would fetch analytics data from Firebase Analytics
     // or Google Analytics API. For now, we'll use mock data.
     loadAnalyticsData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFilter]);
 
   const loadAnalyticsData = async () => {
@@ -160,17 +177,84 @@ const WebsiteAnalytics = () => {
         }))
         .sort((a, b) => b.visitors - a.visitors);
 
-      // Generate recent activity
-      const recentActivity = interactions.slice(0, 10).map(interaction => ({
-        time: formatTimeAgo(interaction.timestamp),
-        action: getActionName(interaction.interaction),
-        page: interaction.url ? new URL(interaction.url).pathname : '/',
-        user: 'Anonymous'
+
+
+      // Calculate average session duration and bounce rate
+      const sessionsMap = {};
+      pageViews.forEach(pv => {
+        if (!pv.sessionId) return;
+        if (!sessionsMap[pv.sessionId]) {
+          sessionsMap[pv.sessionId] = {
+            events: 0,
+            minTime: Infinity,
+            maxTime: 0
+          };
+        }
+        sessionsMap[pv.sessionId].events++;
+        const time = pv.timestamp?.toDate ? pv.timestamp.toDate().getTime() : new Date(pv.timestamp).getTime();
+        if (time < sessionsMap[pv.sessionId].minTime) sessionsMap[pv.sessionId].minTime = time;
+        if (time > sessionsMap[pv.sessionId].maxTime) sessionsMap[pv.sessionId].maxTime = time;
+      });
+
+      let singleEventSessions = 0;
+      let totalDurationMs = 0;
+      let sessionsWithDuration = 0;
+
+      const sessionKeys = Object.keys(sessionsMap);
+      sessionKeys.forEach(key => {
+        const session = sessionsMap[key];
+        if (session.events === 1) {
+          singleEventSessions++;
+        } else if (session.events > 1) {
+          totalDurationMs += (session.maxTime - session.minTime);
+          sessionsWithDuration++;
+        }
+      });
+
+      const bounceRate = sessionKeys.length > 0 
+        ? Math.round((singleEventSessions / sessionKeys.length) * 100) 
+        : 0;
+
+      const averageSessionDuration = sessionsWithDuration > 0 
+        ? Math.round(totalDurationMs / sessionsWithDuration / 1000) 
+        : 0; // in seconds
+
+      // Calculate time-series data for chart
+      const timeSeriesData = {};
+      const datesList = [];
+      for (let i = daysAgo; i >= 0; i--) {
+        const d = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000));
+        const dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        timeSeriesData[dateStr] = { date: dateStr, views: 0, visitors: new Set() };
+        datesList.push(dateStr);
+      }
+
+      pageViews.forEach(pv => {
+        const pvDate = pv.timestamp?.toDate ? pv.timestamp.toDate() : new Date(pv.timestamp);
+        const dateStr = pvDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        if (timeSeriesData[dateStr]) {
+          timeSeriesData[dateStr].views++;
+          if (pv.fingerprint) {
+            timeSeriesData[dateStr].visitors.add(pv.fingerprint);
+          }
+        }
+      });
+
+      const chartData = datesList.map(dateStr => ({
+        date: dateStr,
+        Views: timeSeriesData[dateStr].views,
+        Visitors: timeSeriesData[dateStr].visitors.size
       }));
 
-      // Calculate average session duration (mock for now)
-      const averageSessionDuration = Math.floor(Math.random() * 300) + 120; // 2-7 minutes
-      const bounceRate = Math.floor(Math.random() * 20) + 25; // 25-45%
+      // Enrich recent activity with full details
+      const recentActivityDetailed = interactions.slice(0, 15).map(interaction => ({
+        ...interaction,
+        timeAgo: formatTimeAgo(interaction.timestamp),
+        actionName: getActionName(interaction.interaction),
+        pagePath: interaction.url ? new URL(interaction.url).pathname : '/',
+        fullDate: interaction.timestamp?.toDate ? interaction.timestamp.toDate().toLocaleString() : new Date(interaction.timestamp).toLocaleString(),
+        device: getDeviceType(interaction.userAgent)
+      }));
 
       setAnalyticsData({
         totalViews,
@@ -180,7 +264,8 @@ const WebsiteAnalytics = () => {
         topPages,
         trafficSources,
         deviceTypes,
-        recentActivity
+        recentActivity: recentActivityDetailed,
+        chartData
       });
     } catch (error) {
       console.error('Error loading analytics data:', error);
@@ -251,6 +336,17 @@ const WebsiteAnalytics = () => {
   const getPageIcon = (path) => {
     const page = analyticsData?.topPages.find(p => p.path === path);
     return page?.icon || <VisibilityIcon />;
+  };
+
+  const handleRowClick = (item, type) => {
+    setSelectedItem(item);
+    setDialogType(type);
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setSelectedItem(null);
   };
 
   if (loading) {
@@ -379,6 +475,32 @@ const WebsiteAnalytics = () => {
         </Grid>
       </Grid>
 
+      {/* Analytics Chart */}
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Traffic Overview
+        </Typography>
+        <Box sx={{ width: '100%', height: 350 }}>
+          <ResponsiveContainer>
+            <LineChart
+              data={analyticsData.chartData}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+              <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" />
+              <YAxis stroke="rgba(255,255,255,0.5)" />
+              <RechartsTooltip 
+                contentStyle={{ backgroundColor: 'rgba(20,20,30,0.9)', borderColor: 'rgba(255,255,255,0.2)', color: '#fff', borderRadius: 8 }}
+                itemStyle={{ color: '#fff' }}
+              />
+              <Legend />
+              <Line type="monotone" dataKey="Views" stroke="#00E5FF" strokeWidth={3} activeDot={{ r: 8 }} />
+              <Line type="monotone" dataKey="Visitors" stroke="#7B61FF" strokeWidth={3} />
+            </LineChart>
+          </ResponsiveContainer>
+        </Box>
+      </Paper>
+
       <Grid container spacing={3}>
         {/* Top Pages */}
         <Grid item xs={12} md={6}>
@@ -399,7 +521,12 @@ const WebsiteAnalytics = () => {
                 </TableHead>
                 <TableBody>
                   {analyticsData.topPages.map((page, index) => (
-                    <TableRow key={page.path}>
+                    <TableRow 
+                      key={page.path} 
+                      hover 
+                      onClick={() => handleRowClick(page, 'page')}
+                      sx={{ cursor: 'pointer' }}
+                    >
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           {page.icon}
@@ -570,15 +697,20 @@ const WebsiteAnalytics = () => {
                 </TableHead>
                 <TableBody>
                   {analyticsData.recentActivity.map((activity, index) => (
-                    <TableRow key={index}>
+                    <TableRow 
+                      key={index} 
+                      hover
+                      onClick={() => handleRowClick(activity, 'activity')}
+                      sx={{ cursor: 'pointer' }}
+                    >
                       <TableCell>
                         <Typography variant="caption" color="text.secondary">
-                          {activity.time}
+                          {activity.timeAgo}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={activity.action}
+                          label={activity.actionName}
                           size="small"
                           color="info"
                           variant="outlined"
@@ -586,15 +718,15 @@ const WebsiteAnalytics = () => {
                       </TableCell>
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          {getPageIcon(activity.page)}
+                          {getPageIcon(activity.pagePath)}
                           <Typography variant="body2" sx={{ ml: 1 }}>
-                            {activity.page}
+                            {activity.pagePath}
                           </Typography>
                         </Box>
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2">
-                          {activity.user}
+                          Anonymous
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -606,18 +738,75 @@ const WebsiteAnalytics = () => {
         </Grid>
       </Grid>
 
-      <Alert severity="info" sx={{ mt: 3 }}>
-        <Typography variant="body2">
-          <strong>Note:</strong> This is a demonstration of the website analytics interface. 
-          To implement real analytics tracking, you'll need to:
-          <br />
-          1. Set up Firebase Analytics or Google Analytics
-          <br />
-          2. Implement custom event tracking throughout your app
-          <br />
-          3. Create API endpoints to fetch analytics data
-        </Typography>
-      </Alert>
+      {/* Details Dialog */}
+      <Dialog open={dialogOpen} onClose={closeDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {dialogType === 'activity' && 'Activity Details'}
+          {dialogType === 'page' && 'Page Statistics'}
+        </DialogTitle>
+        <DialogContent dividers>
+          {selectedItem && dialogType === 'activity' && (
+            <List disablePadding>
+              <ListItem>
+                <ListItemText primary="Action" secondary={selectedItem.actionName} />
+              </ListItem>
+              <Divider component="li" />
+              <ListItem>
+                <ListItemText primary="Timestamp" secondary={selectedItem.fullDate} />
+              </ListItem>
+              <Divider component="li" />
+              <ListItem>
+                <ListItemText primary="Page" secondary={selectedItem.pagePath} />
+              </ListItem>
+              <Divider component="li" />
+              <ListItem>
+                <ListItemText primary="Full URL" secondary={selectedItem.url || 'N/A'} />
+              </ListItem>
+              <Divider component="li" />
+              <ListItem>
+                <ListItemText primary="Device Type" secondary={selectedItem.device} />
+              </ListItem>
+              <Divider component="li" />
+              <ListItem>
+                <ListItemText primary="User Agent" secondary={selectedItem.userAgent || 'Unknown'} sx={{ '& .MuiListItemText-secondary': { wordBreak: 'break-all' } }} />
+              </ListItem>
+            </List>
+          )}
+
+          {selectedItem && dialogType === 'page' && (
+            <Box>
+              <Typography variant="h6" gutterBottom>{selectedItem.title}</Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Path: {selectedItem.path}
+              </Typography>
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid item xs={6}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle2" color="text.secondary">Total Views</Typography>
+                      <Typography variant="h4">{selectedItem.views.toLocaleString()}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={6}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle2" color="text.secondary">% of Traffic</Typography>
+                      <Typography variant="h4">{((selectedItem.views / analyticsData.totalViews) * 100).toFixed(1)}%</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+              <Alert severity="info" sx={{ mt: 3 }}>
+                More detailed engagement metrics for this specific page (like average time on page) will be available in a future update once sufficient event data is collected.
+              </Alert>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
