@@ -1,5 +1,6 @@
-import { db } from '../firebase';
+import { db, analytics } from '../firebase';
 import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { logEvent } from 'firebase/analytics';
 
 // Generate a unique session ID for this user session
 const getSessionId = () => {
@@ -47,6 +48,14 @@ export const trackPageView = async (pagePath, pageTitle) => {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       url: window.location.href
     });
+
+    if (analytics) {
+      logEvent(analytics, 'page_view', {
+        page_path: pagePath,
+        page_title: pageTitle,
+        session_id: sessionId
+      });
+    }
   } catch (error) {
     console.error('Error tracking page view:', error);
   }
@@ -63,6 +72,10 @@ export const trackChatEvent = async (eventType, data = {}) => {
       userAgent: navigator.userAgent,
       language: navigator.language
     });
+
+    if (analytics) {
+      logEvent(analytics, eventType, data);
+    }
   } catch (error) {
     console.error('Error tracking chat event:', error);
   }
@@ -85,6 +98,10 @@ export const trackChatSession = async (sessionData) => {
       screenResolution: `${window.screen.width}x${window.screen.height}`,
       url: window.location.href
     });
+
+    if (analytics) {
+      logEvent(analytics, 'chat_session_tracked', sessionData);
+    }
   } catch (error) {
     console.error('Error tracking chat session:', error);
   }
@@ -109,6 +126,10 @@ export const startChatSession = async (sessionId) => {
       messageCount: 0,
       messages: []
     });
+
+    if (analytics) {
+      logEvent(analytics, 'chat_session_started', { session_id: sessionId });
+    }
   } catch (error) {
     console.error('Error starting chat session:', error);
   }
@@ -133,6 +154,10 @@ export const updateChatSession = async (sessionId, messageData) => {
           timestamp: serverTimestamp()
         }]
       });
+
+      if (analytics) {
+        logEvent(analytics, 'chat_message_sent', { session_id: sessionId });
+      }
     }
   } catch (error) {
     console.error('Error updating chat session:', error);
@@ -157,6 +182,14 @@ export const endChatSession = async (sessionId, endData = {}) => {
         status: 'ended',
         ...endData
       });
+
+      if (analytics) {
+        logEvent(analytics, 'chat_session_ended', { 
+          session_id: sessionId, 
+          duration_ms: duration,
+          ...endData 
+        });
+      }
     }
   } catch (error) {
     console.error('Error ending chat session:', error);
@@ -181,6 +214,10 @@ export const trackEvent = async (eventType, eventData = {}) => {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       url: window.location.href
     });
+
+    if (analytics) {
+      logEvent(analytics, eventType, eventData);
+    }
   } catch (error) {
     console.error('Error tracking custom event:', error);
   }
@@ -204,6 +241,10 @@ export const trackUserInteraction = async (interactionType, data = {}) => {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       url: window.location.href
     });
+
+    if (analytics) {
+      logEvent(analytics, interactionType, data);
+    }
   } catch (error) {
     console.error('Error tracking user interaction:', error);
   }
