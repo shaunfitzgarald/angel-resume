@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import {
   Container,
   Paper,
@@ -131,6 +133,60 @@ const AdminDashboard = () => {
 
 // Dashboard Overview Component
 const DashboardOverview = () => {
+  const [stats, setStats] = useState({
+    messages: 0,
+    chatSessions: 0,
+    pageViews: 0,
+    testimonials: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Fetch total messages
+        const messagesSnapshot = await getDocs(collection(db, 'messages'));
+        const messagesCount = messagesSnapshot.size;
+
+        // Fetch chat sessions
+        const chatSessionsSnapshot = await getDocs(collection(db, 'chat_sessions'));
+        const chatSessionsCount = chatSessionsSnapshot.size;
+
+        // Fetch page views for today
+        const pageViewsQuery = query(
+          collection(db, 'analytics'),
+          where('type', '==', 'page_view')
+        );
+        const pageViewsSnapshot = await getDocs(pageViewsQuery);
+        let todayPageViews = 0;
+        pageViewsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const timestamp = data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
+          if (timestamp >= today) {
+            todayPageViews++;
+          }
+        });
+
+        // Fetch testimonials
+        const testimonialsSnapshot = await getDocs(collection(db, 'testimonials'));
+        const testimonialsCount = testimonialsSnapshot.size;
+
+        setStats({
+          messages: messagesCount,
+          chatSessions: chatSessionsCount,
+          pageViews: todayPageViews,
+          testimonials: testimonialsCount
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
@@ -145,7 +201,7 @@ const DashboardOverview = () => {
                 <Typography variant="h6">Messages</Typography>
               </Box>
               <Typography variant="h4" color="primary">
-                0
+                {stats.messages}
               </Typography>
               <Typography color="text.secondary">
                 New contact form messages
@@ -167,7 +223,7 @@ const DashboardOverview = () => {
                 <Typography variant="h6">Chat Sessions</Typography>
               </Box>
               <Typography variant="h4" color="primary">
-                0
+                {stats.chatSessions}
               </Typography>
               <Typography color="text.secondary">
                 AI chatbot interactions
@@ -189,7 +245,7 @@ const DashboardOverview = () => {
                 <Typography variant="h6">Page Views</Typography>
               </Box>
               <Typography variant="h4" color="primary">
-                0
+                {stats.pageViews}
               </Typography>
               <Typography color="text.secondary">
                 Website visits today
@@ -211,7 +267,7 @@ const DashboardOverview = () => {
                 <Typography variant="h6">Testimonials</Typography>
               </Box>
               <Typography variant="h4" color="primary">
-                0
+                {stats.testimonials}
               </Typography>
               <Typography color="text.secondary">
                 Published reviews

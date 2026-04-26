@@ -168,9 +168,45 @@ const WebsiteAnalytics = () => {
         user: 'Anonymous'
       }));
 
-      // Calculate average session duration (mock for now)
-      const averageSessionDuration = Math.floor(Math.random() * 300) + 120; // 2-7 minutes
-      const bounceRate = Math.floor(Math.random() * 20) + 25; // 25-45%
+      // Calculate average session duration and bounce rate
+      const sessionsMap = {};
+      pageViews.forEach(pv => {
+        if (!pv.sessionId) return;
+        if (!sessionsMap[pv.sessionId]) {
+          sessionsMap[pv.sessionId] = {
+            events: 0,
+            minTime: Infinity,
+            maxTime: 0
+          };
+        }
+        sessionsMap[pv.sessionId].events++;
+        const time = pv.timestamp?.toDate ? pv.timestamp.toDate().getTime() : new Date(pv.timestamp).getTime();
+        if (time < sessionsMap[pv.sessionId].minTime) sessionsMap[pv.sessionId].minTime = time;
+        if (time > sessionsMap[pv.sessionId].maxTime) sessionsMap[pv.sessionId].maxTime = time;
+      });
+
+      let singleEventSessions = 0;
+      let totalDurationMs = 0;
+      let sessionsWithDuration = 0;
+
+      const sessionKeys = Object.keys(sessionsMap);
+      sessionKeys.forEach(key => {
+        const session = sessionsMap[key];
+        if (session.events === 1) {
+          singleEventSessions++;
+        } else if (session.events > 1) {
+          totalDurationMs += (session.maxTime - session.minTime);
+          sessionsWithDuration++;
+        }
+      });
+
+      const bounceRate = sessionKeys.length > 0 
+        ? Math.round((singleEventSessions / sessionKeys.length) * 100) 
+        : 0;
+
+      const averageSessionDuration = sessionsWithDuration > 0 
+        ? Math.round(totalDurationMs / sessionsWithDuration / 1000) 
+        : 0; // in seconds
 
       setAnalyticsData({
         totalViews,
@@ -606,18 +642,7 @@ const WebsiteAnalytics = () => {
         </Grid>
       </Grid>
 
-      <Alert severity="info" sx={{ mt: 3 }}>
-        <Typography variant="body2">
-          <strong>Note:</strong> This is a demonstration of the website analytics interface. 
-          To implement real analytics tracking, you'll need to:
-          <br />
-          1. Set up Firebase Analytics or Google Analytics
-          <br />
-          2. Implement custom event tracking throughout your app
-          <br />
-          3. Create API endpoints to fetch analytics data
-        </Typography>
-      </Alert>
+
     </Box>
   );
 };
