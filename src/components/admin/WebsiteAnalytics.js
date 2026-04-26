@@ -27,7 +27,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -45,16 +44,9 @@ import {
 } from 'recharts';
 import {
   Visibility as VisibilityIcon,
-  TrendingUp as TrendingUpIcon,
   People as PeopleIcon,
   AccessTime as TimeIcon,
-  MouseIcon as ClickIcon,
-  ExitToApp as ExitIcon,
-  Home as HomeIcon,
-  Work as WorkIcon,
-  Code as CodeIcon,
-  Email as EmailIcon,
-  AttachMoney as MoneyIcon
+  ExitToApp as ExitIcon
 } from '@mui/icons-material';
 
 const WebsiteAnalytics = () => {
@@ -71,6 +63,7 @@ const WebsiteAnalytics = () => {
     // In a real implementation, you would fetch analytics data from Firebase Analytics
     // or Google Analytics API. For now, we'll use mock data.
     loadAnalyticsData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFilter]);
 
   const loadAnalyticsData = async () => {
@@ -184,13 +177,7 @@ const WebsiteAnalytics = () => {
         }))
         .sort((a, b) => b.visitors - a.visitors);
 
-      // Generate recent activity
-      const recentActivity = interactions.slice(0, 10).map(interaction => ({
-        time: formatTimeAgo(interaction.timestamp),
-        action: getActionName(interaction.interaction),
-        page: interaction.url ? new URL(interaction.url).pathname : '/',
-        user: 'Anonymous'
-      }));
+
 
       // Calculate average session duration and bounce rate
       const sessionsMap = {};

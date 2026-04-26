@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, query, orderBy, onSnapshot, where, getDocs, limit } from 'firebase/firestore';
+import { collection, query, orderBy, where, getDocs, limit } from 'firebase/firestore';
 import {
   Box,
   Typography,
@@ -27,15 +27,10 @@ import {
 import {
   Chat as ChatIcon,
   Message as MessageIcon,
-  TrendingUp as TrendingUpIcon,
-  People as PeopleIcon,
-  AccessTime as TimeIcon,
-  ThumbUp as ThumbUpIcon,
-  ThumbDown as ThumbDownIcon
+  AccessTime as TimeIcon
 } from '@mui/icons-material';
 
 const ChatAnalytics = () => {
-  const [chatSessions, setChatSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState('7'); // days
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,6 +43,7 @@ const ChatAnalytics = () => {
 
   useEffect(() => {
     loadChatData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFilter]);
 
   const loadChatData = async () => {
@@ -134,8 +130,6 @@ const ChatAnalytics = () => {
         averageSessionLength: Math.round(averageSessionLength * 10) / 10,
         recentSessions
       });
-
-      setChatSessions(sessions);
     } catch (error) {
       console.error('Error loading chat data:', error);
     }

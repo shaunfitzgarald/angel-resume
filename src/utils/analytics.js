@@ -1,5 +1,5 @@
 import { db, analytics } from '../firebase';
-import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDocs, query, where, limit } from 'firebase/firestore';
 import { logEvent } from 'firebase/analytics';
 
 // Generate a unique session ID for this user session
