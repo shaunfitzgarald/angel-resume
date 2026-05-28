@@ -6,7 +6,7 @@ import {
   Work as WorkIcon,
   Code as CodeIcon,
   Email as EmailIcon,
-  AttachMoney as AttachMoneyIcon,
+  // AttachMoney as AttachMoneyIcon,
 } from '@mui/icons-material';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 
@@ -15,7 +15,7 @@ const navItems = [
   { text: 'Experience', icon: <WorkIcon />, path: '/experience' },
   { text: 'Skills', icon: <CodeIcon />, path: '/skills' },
   { text: 'Projects', icon: <DataObjectIcon />, path: '/projects' },
-  { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
+  // { text: 'Pricing', icon: <AttachMoneyIcon />, path: '/pricing' },
   { text: 'Contact', icon: <EmailIcon />, path: '/contact' },
 ];
 

@@ -58,7 +58,7 @@ export default function ChatWidget({ embedded = false }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "✨ Hi! I'm Shaun's AI assistant. Ask me about pricing, services, or Shaun's background and work." },
+    { role: 'assistant', content: "✨ Hi! I'm Shaun's AI assistant. Ask me about services, projects, or my background, and I can guide you on how to get in touch for a custom quote." },
   ]);
   const [consent, setConsent] = useState(() => readConsent());
   const [sessionId] = useState(() => `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
@@ -198,7 +198,7 @@ export default function ChatWidget({ embedded = false }) {
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} 
             size="small" 
             fullWidth 
-            placeholder="Ask about pricing, services..." 
+            placeholder="Ask about services, projects..." 
             disabled={loading || disabled} 
             sx={{
               '& .MuiOutlinedInput-root': {

@@ -8,7 +8,7 @@ import {
   Fade,
   IconButton,
 } from '@mui/material';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import theme from './theme';
 import logoImage from './assets/logo-new.png';
@@ -26,7 +26,7 @@ import Skills from './sections/Skills';
 import Projects from './sections/Projects';
 import Contact from './sections/Contact';
 import Footer from './sections/Footer';
-import Pricing from './sections/Pricing';
+// import Pricing from './sections/Pricing';
 // import Testimonials from './sections/Testimonials';
 
 // Import pages
@@ -64,7 +64,7 @@ function getPageTitle(pathname) {
     '/experience': 'Experience - Shaun Fitzgarald',
     '/skills': 'Skills - Shaun Fitzgarald',
     '/projects': 'Projects - Shaun Fitzgarald',
-    '/pricing': 'Pricing - Shaun Fitzgarald',
+    // '/pricing': 'Pricing - Shaun Fitzgarald',
     // '/testimonials': 'Testimonials - Shaun Fitzgarald',
     '/contact': 'Contact - Shaun Fitzgarald',
     '/help': 'Help - Shaun Fitzgarald',
@@ -213,7 +213,8 @@ function App() {
                     <Route path="/experience" element={<PageWrapper><Experience /></PageWrapper>} />
                     <Route path="/skills" element={<PageWrapper><Skills /></PageWrapper>} />
                     <Route path="/projects" element={<PageWrapper><Projects /></PageWrapper>} />
-                    <Route path="/pricing" element={<PageWrapper><Pricing /></PageWrapper>} />
+                    {/* <Route path="/pricing" element={<PageWrapper><Pricing /></PageWrapper>} /> */}
+                    <Route path="/pricing" element={<Navigate to="/contact" replace />} />
                     <Route path="/help" element={<PageWrapper><Help /></PageWrapper>} />
                     <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
                     <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />
