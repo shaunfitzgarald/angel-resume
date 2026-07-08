@@ -130,7 +130,7 @@ const experiences = [
     degree: 'Full-Stack Web Development Bootcamp',
     institution: 'LEARN Academy',
     location: 'San Diego, CA',
-    duration: 'Jan 2024',
+    duration: 'Aug 2023 - Jan 2024',
     description: [
       'Engineered full-stack applications through intensive 500+ hour curriculum.',
       'Mastered React, modern UI frameworks, and robust API integrations.',
