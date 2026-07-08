@@ -3,7 +3,8 @@
  */
 
 // Base URL for API calls - adjust as needed for your environment
-const API_URL = process.env.REACT_APP_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 
 /**
  * Sends chat messages to the AI service and returns the response

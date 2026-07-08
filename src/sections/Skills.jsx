@@ -14,12 +14,12 @@ const skillsData = [
     icon: <CodeIcon fontSize="large" sx={{ color: 'primary.main' }} />,
     skills: [
       { name: 'React', level: 90 },
-      { name: 'JavaScript', level: 90 },
-      { name: 'HTML/CSS', level: 85 },
-      { name: 'Responsive Design', level: 85 },
-      { name: 'Material UI', level: 85 },
+      { name: 'Vite', level: 90 },
       { name: 'TailwindCSS', level: 85 },
-      { name: 'Syncfusion', level: 70 },
+      { name: 'Material UI', level: 85 },
+      { name: 'HTML/CSS', level: 85 },
+      { name: 'JavaScript', level: 90 },
+      { name: 'Responsive Design', level: 85 },
     ],
   },
   {
