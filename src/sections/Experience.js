@@ -7,6 +7,21 @@ import { BentoCard } from '../components/BentoCard';
 
 const experiences = [
   {
+    id: 0,
+    role: 'DevOps Expert',
+    company: 'Aimia',
+    location: 'Remote',
+    duration: 'Jun 2026 – Present',
+    description: [
+      'Leading a full AWS-to-GCP infrastructure migration, including database, compute, and storage layers.',
+      'Architecting cloud-native CI/CD pipelines and environment configurations for scalable production workloads.',
+      'Collaborating cross-functionally to ensure zero-downtime cutover and data integrity throughout the migration.'
+    ],
+    skills: ['GCP', 'AWS', 'DevOps', 'Cloud Migration', 'CI/CD', 'MongoDB Atlas', 'Infrastructure'],
+    type: 'work',
+    icon: <WorkIcon />
+  },
+  {
     id: 1,
     role: 'Freelance Web Developer',
     company: 'Independent Contractor',
@@ -101,7 +116,7 @@ const experiences = [
     degree: 'Associate Degree for Transfer, Computer Science',
     institution: 'San Diego Mesa College',
     location: 'San Diego, CA',
-    duration: 'In Progress - Expected Jan 2025',
+    duration: 'In Progress - Expected Jan 2027',
     description: [
       'Focusing aggressively on scalable software architecture and advanced algorithms.',
       'Applying core classroom theory directly to complex freelance deployments.'
