@@ -6,6 +6,7 @@ import { BentoCard } from '../components/BentoCard';
 import { GitHub as GitHubIcon, Launch as LaunchIcon } from '@mui/icons-material';
 
 // Import project images
+import brassRailSdImg from '../assets/brass-rail-sd.png';
 import graceKlassenImg from '../assets/grace-klassen.png';
 import crookedCredenzaImg from '../assets/crooked-credenza-full.png';
 import everythingBjaImg from '../assets/everything-bja-full.png';
@@ -18,6 +19,13 @@ import eventsAppScreenshot from '../assets/events-app-screenshot.png'
 import sdHomelessInfoImg from '../assets/sd-homeless-info.png';
 
 const projects = [
+  {
+    title: 'The Brass Rail SD',
+    description: "San Diego's premier historic LGBT nightlife destination in the heart of Hillcrest. A full-featured venue website with a live events calendar, categorized by Drag, Theme, Latin & Happy Hour nights. Includes VIP table booking with tiered pricing, a Cast & Crew roster with individual performer profiles, a photo gallery, a merch shop powered by Square, and the Puta Lucha sub-brand page featuring interactive fighter cards with dynamic stats.",
+    image: brassRailSdImg,
+    tags: ['React', 'Vite', 'Firebase', 'Event Management', 'Square Commerce', 'Nightlife', 'LGBT'],
+    demo: 'https://thebrassrailsd.com'
+  },
   {
     title: "Tylar & Tim's Wedding",
     description: 'A modern, elegant wedding website for Tylar and Timothy\'s upcoming celebration in Honolulu, Hawaii. Features a customized RSVP system, guest count tracker, travel logistics with hotel booking links, and an interactive AI chat assistant for guest inquiries.',
