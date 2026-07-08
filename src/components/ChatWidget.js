@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Paper, IconButton, Typography, TextField, Button, Stack, Avatar, Tooltip } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CloseIcon from '@mui/icons-material/Close';
+import ReactMarkdown from 'react-markdown';
 import { sendChat } from '../services/aiService';
 import { trackChatEvent, startChatSession, updateChatSession, endChatSession } from '../utils/analytics';
 
@@ -41,13 +42,58 @@ const TypingIndicator = () => (
   </Stack>
 );
 
+const markdownStyles = {
+  color: '#fff',
+  fontSize: '0.875rem',
+  lineHeight: 1.6,
+  '& p': { margin: '0 0 8px 0', '&:last-child': { margin: 0 } },
+  '& h1, & h2, & h3': { color: '#00E5FF', fontWeight: 700, margin: '8px 0 4px 0', fontSize: '1em' },
+  '& strong': { color: '#fff', fontWeight: 700 },
+  '& em': { color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' },
+  '& ul, & ol': { paddingLeft: '20px', margin: '4px 0 8px 0' },
+  '& li': { margin: '2px 0' },
+  '& code': {
+    background: 'rgba(0,229,255,0.1)',
+    border: '1px solid rgba(0,229,255,0.2)',
+    borderRadius: '4px',
+    padding: '1px 5px',
+    fontFamily: 'monospace',
+    fontSize: '0.8em',
+    color: '#00E5FF',
+  },
+  '& pre': {
+    background: 'rgba(0,0,0,0.4)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '8px',
+    padding: '10px 12px',
+    overflowX: 'auto',
+    margin: '8px 0',
+    '& code': { background: 'none', border: 'none', padding: 0, color: '#00E5FF' },
+  },
+  '& a': { color: '#7B61FF', textDecoration: 'underline' },
+  '& blockquote': {
+    borderLeft: '3px solid #7B61FF',
+    margin: '8px 0',
+    paddingLeft: '10px',
+    color: 'rgba(255,255,255,0.7)',
+    fontStyle: 'italic',
+  },
+  '& hr': { border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)', margin: '8px 0' },
+};
+
 function Message({ role, content }) {
   const isUser = role === 'user';
   return (
     <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
       {!isUser && (<Avatar sx={{ width: 28, height: 28, background: 'rgba(255,255,255,0.1)', color: '#00E5FF', fontSize: '0.75rem', fontWeight: 700 }}>AI</Avatar>)}
       <Paper elevation={0} sx={{ p: 1.5, borderRadius: '16px', borderBottomRightRadius: isUser ? 0 : '16px', borderBottomLeftRadius: !isUser ? 0 : '16px', background: isUser ? 'linear-gradient(135deg, #7B61FF 0%, #00E5FF 100%)' : 'rgba(255,255,255,0.05)', border: isUser ? 'none' : '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
-        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{content}</Typography>
+        {isUser ? (
+          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{content}</Typography>
+        ) : (
+          <Box sx={markdownStyles}>
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </Box>
+        )}
       </Paper>
     </Stack>
   );
