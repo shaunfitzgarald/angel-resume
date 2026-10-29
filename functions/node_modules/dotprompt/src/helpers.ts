@@ -16,7 +16,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SafeString } from 'handlebars';
+import handlebars from 'handlebars/dist/cjs/handlebars.js';
+const { SafeString } = handlebars;
 
 export function json(
   serializable: any,
