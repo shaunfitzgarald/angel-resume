@@ -3,6 +3,7 @@ import { Box, Paper, IconButton, Typography, TextField, Button, Stack, Avatar, T
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { sendChat } from '../services/aiService';
 import { trackChatEvent, startChatSession, updateChatSession, endChatSession } from '../utils/analytics';
 
@@ -47,11 +48,24 @@ const markdownStyles = {
   fontSize: '0.875rem',
   lineHeight: 1.6,
   '& p': { margin: '0 0 8px 0', '&:last-child': { margin: 0 } },
-  '& h1, & h2, & h3': { color: '#00E5FF', fontWeight: 700, margin: '8px 0 4px 0', fontSize: '1em' },
+  wordBreak: 'break-word',
+  '& h1, & h2, & h3, & h4, & h5, & h6': { color: '#00E5FF', fontWeight: 700, margin: '8px 0 4px 0', fontSize: '1em' },
   '& strong': { color: '#fff', fontWeight: 700 },
   '& em': { color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' },
+  '& del': { color: 'rgba(255,255,255,0.5)' },
   '& ul, & ol': { paddingLeft: '20px', margin: '4px 0 8px 0' },
-  '& li': { margin: '2px 0' },
+  // Tailwind's preflight strips list markers, so restore them explicitly
+  '& ul': { listStyleType: 'disc' },
+  '& ol': { listStyleType: 'decimal' },
+  '& ul ul': { listStyleType: 'circle' },
+  '& li::marker': { color: '#00E5FF' },
+  '& li': { margin: '2px 0', '& > p': { margin: 0 } },
+  '& li ul, & li ol': { margin: '2px 0' },
+  '& ul.contains-task-list': { listStyle: 'none', paddingLeft: '4px' },
+  '& input[type="checkbox"]': { marginRight: '6px', accentColor: '#7B61FF' },
+  '& table': { display: 'block', overflowX: 'auto', borderCollapse: 'collapse', margin: '8px 0', fontSize: '0.8rem' },
+  '& th, & td': { border: '1px solid rgba(255,255,255,0.15)', padding: '4px 8px', textAlign: 'left' },
+  '& th': { background: 'rgba(0,229,255,0.1)', color: '#00E5FF', fontWeight: 600 },
   '& code': {
     background: 'rgba(0,229,255,0.1)',
     border: '1px solid rgba(0,229,255,0.2)',
@@ -81,6 +95,18 @@ const markdownStyles = {
   '& hr': { border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)', margin: '8px 0' },
 };
 
+// External links open in a new tab; site-relative links (e.g. /contact) and mailto/tel stay in place
+const markdownComponents = {
+  a: ({ href = '', children, node, ...props }) => {
+    const external = /^https?:\/\//i.test(href);
+    return (
+      <a href={href} {...props} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+        {children}
+      </a>
+    );
+  },
+};
+
 function Message({ role, content }) {
   const isUser = role === 'user';
   return (
@@ -91,7 +117,7 @@ function Message({ role, content }) {
           <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{content}</Typography>
         ) : (
           <Box sx={markdownStyles}>
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{content}</ReactMarkdown>
           </Box>
         )}
       </Paper>

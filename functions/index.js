@@ -81,7 +81,31 @@ Assistant Guidelines:
 - Keep responses concise, helpful, and friendly.
 - Proactively guide users toward contacting Shaun (/contact) for pricing and project discussion.
 - If asked about timezone/location: San Diego, CA (Pacific). Typical reply time: within 1 business day.
-- Do not promise discounts or discuss backend/technical details. Keep answers short, polished, and eager to help.`;
+- Do not promise discounts or discuss backend/technical details. Keep answers short, polished, and eager to help.
+
+Formatting:
+- Replies are rendered as Markdown. Use it where it helps readability: **bold** for key points, bullet or numbered lists for options and steps, and links like [Contact page](/contact) or [email Shaun](mailto:shaun@shaunfitzgarald.com).
+- Keep formatting light for short answers; avoid large headings.`;
+
+// Gemini model used by the chat assistant. Newer Gemini models are served from the "global" location.
+const CHAT_MODEL = 'gemini-3.8-flash';
+const CHAT_LOCATION = 'global';
+
+// Lazily initialize Genkit once per function instance
+let aiPromise;
+function getAI() {
+  if (!aiPromise) {
+    aiPromise = (async () => {
+      // Dynamically import Genkit and the Vertex AI plugin (ESM packages from CommonJS)
+      const { genkit } = await import('genkit');
+      const { vertexAI } = await import('@genkit-ai/google-genai');
+      // Uses ADC (service account) in Cloud Functions
+      const ai = genkit({ plugins: [vertexAI({ location: CHAT_LOCATION })] });
+      return { ai, vertexAI };
+    })().catch((e) => { aiPromise = undefined; throw e; });
+  }
+  return aiPromise;
+}
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -92,36 +116,24 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'messages array required' });
     }
 
-    // Map messages to Gemini format
-    const contents = [];
-    // Add system primer as the first user message to guide model (Gemini lacks explicit system role)
-    contents.push({ role: 'user', parts: [{ text: SYSTEM_PRIMER }] });
-    for (const m of messages) {
-      const role = m.role === 'assistant' ? 'model' : 'user';
-      contents.push({ role, parts: [{ text: String(m.content || '') }] });
+    // Map chat history to Genkit message format (Gemini uses 'model' for assistant turns)
+    const history = messages.map((m) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      content: [{ text: String(m.content || '') }],
+    }));
+    // Gemini requires the conversation to start with a user turn; drop the canned greeting
+    while (history.length && history[0].role === 'model') history.shift();
+    if (history.length === 0) {
+      return res.status(400).json({ error: 'at least one user message required' });
     }
 
-    // Build a simple prompt string from the system primer and chat history
-    const promptText =
-      `${SYSTEM_PRIMER}\n\n` +
-      messages
-        .map((m) => (m.role === 'assistant' ? `Assistant: ${m.content}` : `User: ${m.content}`))
-        .join('\n') +
-      `\nAssistant:`;
-
-    // Dynamically import Genkit and Vertex AI plugin (works in CommonJS/Node 18)
-    const { genkit } = await import('genkit');
-    const { vertexAI } = await import('@genkit-ai/vertexai');
-
-    // Initialize Genkit with Vertex AI plugin. Uses ADC (service account) in Cloud Functions.
-    const ai = genkit({
-      plugins: [vertexAI({ location: 'us-central1' })],
-    });
+    const { ai, vertexAI } = await getAI();
 
     // Generate using Gemini on Vertex AI (no API key required when running in GCP env)
     const { text } = await ai.generate({
-      model: vertexAI.model('gemini-2.5-flash'),
-      prompt: promptText,
+      model: vertexAI.model(CHAT_MODEL),
+      system: SYSTEM_PRIMER,
+      messages: history,
     });
 
     const reply = text || 'Sorry, I could not generate a response.';
